@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://cip5k74cxhn3u"
+path="res://.godot/imported/Bag.obj-7a87e55ef513df29bf71ec43581d87bb.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Bag.obj-7a87e55ef513df29bf71ec43581d87bb.mesh"]
+
+source_file="res://assets/Medieval Village Pack - Dec 2020/Props/OBJ/Bag.obj"
+dest_files=["res://.godot/imported/Bag.obj-7a87e55ef513df29bf71ec43581d87bb.mesh", "res://.godot/imported/Bag.obj-7a87e55ef513df29bf71ec43581d87bb.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://cggqvk11gvv72"
+path="res://.godot/imported/Mill.obj-209e0001d9bed757c33ee3bb2d3d9aa5.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Mill.obj-209e0001d9bed757c33ee3bb2d3d9aa5.mesh"]
+
+source_file="res://assets/Medieval Village Pack - Dec 2020/Buildings/OBJ/Mill.obj"
+dest_files=["res://.godot/imported/Mill.obj-209e0001d9bed757c33ee3bb2d3d9aa5.mesh", "res://.godot/imported/Mill.obj-209e0001d9bed757c33ee3bb2d3d9aa5.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

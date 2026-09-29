@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://tjwwg5una035"
+path="res://.godot/imported/Dock_Wide.obj-ecd0c8beadfc31f4b9d17a00a20fbe6e.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Dock_Wide.obj-ecd0c8beadfc31f4b9d17a00a20fbe6e.mesh"]
+
+source_file="res://assets/Cute Fish Pack - Feb 2020/OBJ/Dock_Wide.obj"
+dest_files=["res://.godot/imported/Dock_Wide.obj-ecd0c8beadfc31f4b9d17a00a20fbe6e.mesh", "res://.godot/imported/Dock_Wide.obj-ecd0c8beadfc31f4b9d17a00a20fbe6e.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

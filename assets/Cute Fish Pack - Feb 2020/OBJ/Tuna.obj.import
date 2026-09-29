@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://criagxb5onkww"
+path="res://.godot/imported/Tuna.obj-3b13013fbd3a0236c9c34f6d78f26d1e.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Tuna.obj-3b13013fbd3a0236c9c34f6d78f26d1e.mesh"]
+
+source_file="res://assets/Cute Fish Pack - Feb 2020/OBJ/Tuna.obj"
+dest_files=["res://.godot/imported/Tuna.obj-3b13013fbd3a0236c9c34f6d78f26d1e.mesh", "res://.godot/imported/Tuna.obj-3b13013fbd3a0236c9c34f6d78f26d1e.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

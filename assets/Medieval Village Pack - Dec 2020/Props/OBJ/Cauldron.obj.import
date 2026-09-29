@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://d1ui5dd1m6e6x"
+path="res://.godot/imported/Cauldron.obj-a40e5ea6c200ed85f8dd30b0fc54900d.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Cauldron.obj-a40e5ea6c200ed85f8dd30b0fc54900d.mesh"]
+
+source_file="res://assets/Medieval Village Pack - Dec 2020/Props/OBJ/Cauldron.obj"
+dest_files=["res://.godot/imported/Cauldron.obj-a40e5ea6c200ed85f8dd30b0fc54900d.mesh", "res://.godot/imported/Cauldron.obj-a40e5ea6c200ed85f8dd30b0fc54900d.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://tioaon36vtnm"
+path="res://.godot/imported/WoodLog_Snow.obj-b6e99ae4cfddbf12157d9e169b7692ed.mesh"
+
+[deps]
+
+files=["res://.godot/imported/WoodLog_Snow.obj-b6e99ae4cfddbf12157d9e169b7692ed.mesh"]
+
+source_file="res://assets/Ultimate Nature Pack - Jun 2019/OBJ/WoodLog_Snow.obj"
+dest_files=["res://.godot/imported/WoodLog_Snow.obj-b6e99ae4cfddbf12157d9e169b7692ed.mesh", "res://.godot/imported/WoodLog_Snow.obj-b6e99ae4cfddbf12157d9e169b7692ed.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

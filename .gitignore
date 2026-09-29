@@ -1,0 +1,25 @@
+# Godot
+.godot/
+.import/
+*.translation
+export_presets.cfg
+export_credentials.cfg
+*.tmp
+
+# Exports
+build/
+*.apk
+*.aab
+*.ipa
+
+# macOS
+.DS_Store
+._*
+
+# Editors
+.vscode/
+.idea/
+
+# itHappy Creative Characters FREE: license forbids redistribution, download it yourself
+assets/itHappy Creative Characters Free/
+assets/itHappy Characters GLB/

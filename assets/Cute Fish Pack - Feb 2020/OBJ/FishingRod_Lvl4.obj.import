@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dtteaea8geg4n"
+path="res://.godot/imported/FishingRod_Lvl4.obj-7a6940c6c4b439cac59da97b9b233cad.mesh"
+
+[deps]
+
+files=["res://.godot/imported/FishingRod_Lvl4.obj-7a6940c6c4b439cac59da97b9b233cad.mesh"]
+
+source_file="res://assets/Cute Fish Pack - Feb 2020/OBJ/FishingRod_Lvl4.obj"
+dest_files=["res://.godot/imported/FishingRod_Lvl4.obj-7a6940c6c4b439cac59da97b9b233cad.mesh", "res://.godot/imported/FishingRod_Lvl4.obj-7a6940c6c4b439cac59da97b9b233cad.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false
