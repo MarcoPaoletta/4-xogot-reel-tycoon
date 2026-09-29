@@ -1,0 +1,15 @@
+interface:
+  display_name: Xogot Game Design
+  short_description: Design, review, and build Godot games in Xogot
+  default_prompt: Use $xogot-game-design to review my Godot game architecture,
+    recommend better 2D or 3D defaults, and apply changes to the project open
+    in Xogot with the xo command.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true
