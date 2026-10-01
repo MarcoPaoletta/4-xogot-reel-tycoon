@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://byvrkf8fx1wco"]
+
+[ext_resource type="Script" uid="uid://d0ugwtg5bhhmw" path="res://scripts/main.gd" id="1_o5qli"]
+
+[node name="ReelTycoon" type="Node3D" unique_id=819524933]
+script = ExtResource("1_o5qli")
