@@ -1,0 +1,42 @@
+[gd_scene format=3]
+[ext_resource type="Texture2D" path="res://ui/icons/request_bubble.svg" id="1"]
+[ext_resource type="Texture2D" path="res://ui/icons/fish.svg" id="2"]
+[node name="OrderBubble" type="Node3D"]
+position = Vector3(0,2.40,0)
+[node name="Icon" type="Sprite3D" parent="."]
+texture = ExtResource("1")
+pixel_size = 0.0045
+billboard = 0
+shaded = false
+no_depth_test = true
+render_priority = 1
+cast_shadow = 0
+[node name="Fish" type="Node3D" parent="."]
+position = Vector3(-0.51,0.035,0.025)
+[node name="Glyph" type="Sprite3D" parent="Fish"]
+texture = ExtResource("2")
+pixel_size = 0.0075
+shaded = false
+no_depth_test = true
+render_priority = 2
+cast_shadow = 0
+[node name="Caption" type="Label3D" parent="."]
+position = Vector3(0.15,0.09,0.04)
+billboard = 0
+pixel_size = 0.0038
+font_size = 32
+outline_size = 0
+no_depth_test = true
+render_priority = 2
+modulate = Color(0.06,0.20,0.24,1)
+text = "Goldfish"
+[node name="Progress" type="Label3D" parent="."]
+position = Vector3(0.15,-0.13,0.04)
+billboard = 0
+pixel_size = 0.0035
+font_size = 28
+outline_size = 0
+no_depth_test = true
+render_priority = 2
+modulate = Color(0.18,0.36,0.31,1)
+text = "0 / 5 packages"

@@ -1,0 +1,1257 @@
+[gd_scene format=3 uid="uid://d2sxj62aeg0dp"]
+
+[ext_resource type="Script" uid="uid://shursob3bh3h" path="res://scripts/hud.gd" id="1_kicr4"]
+[ext_resource type="Texture2D" uid="uid://dtbhnvdbm8m8o" path="res://ui/icons/coin.svg" id="2_mj13f"]
+[ext_resource type="Texture2D" uid="uid://c5u7r6v1xpcve" path="res://ui/icons/fish.svg" id="3_0h1do"]
+[ext_resource type="Texture2D" uid="uid://c6b3q8p0pnb0a" path="res://ui/icons/box.svg" id="4_4d46k"]
+[ext_resource type="Texture2D" uid="uid://meauej1useq3" path="res://ui/icons/book.svg" id="5_erw67"]
+[ext_resource type="Texture2D" uid="uid://dla7rly5n3rrp" path="res://ui/icons/gear.svg" id="6_gonto"]
+[ext_resource type="Script" uid="uid://jmvr5l4hy2vu" path="res://scripts/joystick.gd" id="7_cwdlq"]
+[ext_resource type="Texture2D" uid="uid://oj6lkwy367v5" path="res://ui/icons/hook.svg" id="8_o6xly"]
+[ext_resource type="PackedScene" uid="uid://bua3sy2lfi6dp" path="res://scenes/ui/merge_board.tscn" id="9_we3sy"]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/station_badge.tscn" id="V4_badge"]
+[ext_resource type="PackedScene" path="res://scenes/ui/debug_panel.tscn" id="V4_debug"]
+[ext_resource type="PackedScene" path="res://scenes/ui/reset_confirm.tscn" id="V4_reset"]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/cutter_view.tscn" id="V6_cutter"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_el1dq"]
+bg_color = Color(0.972549, 0.98039216, 0.9490196, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9141961, 0.92156863, 0.89207846, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0.025, 0.1, 0.13, 0.18)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gmc6u"]
+bg_color = Color(0.972549, 0.98039216, 0.9490196, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9141961, 0.92156863, 0.89207846, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0.025, 0.1, 0.13, 0.18)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1e6lo"]
+bg_color = Color(0.972549, 0.98039216, 0.9490196, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9141961, 0.92156863, 0.89207846, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0.025, 0.1, 0.13, 0.18)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4mi7y"]
+bg_color = Color(0.972549, 0.98039216, 0.9490196, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 4
+border_color = Color(0.8169412, 0.8235294, 0.7971765, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0.025, 0.1, 0.13, 0.18)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pkwgd"]
+bg_color = Color(0.9141961, 0.92156863, 0.89207846, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8593443, 0.86627454, 0.8385537, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d5po8"]
+bg_color = Color(0.97364706, 0.9811765, 0.9510588, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.91522825, 0.9223059, 0.8939953, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0.025, 0.1, 0.13, 0.18)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7yoph"]
+bg_color = Color(0.7490196, 0.8156863, 0.7882353, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.70407844, 0.7667451, 0.74094117, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qmm8d"]
+bg_color = Color(0.972549, 0.98039216, 0.9490196, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 4
+border_color = Color(0.8169412, 0.8235294, 0.7971765, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0.025, 0.1, 0.13, 0.18)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t0png"]
+bg_color = Color(0.9141961, 0.92156863, 0.89207846, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8593443, 0.86627454, 0.8385537, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b6swc"]
+bg_color = Color(0.97364706, 0.9811765, 0.9510588, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.91522825, 0.9223059, 0.8939953, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0.025, 0.1, 0.13, 0.18)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_27rlx"]
+bg_color = Color(0.7490196, 0.8156863, 0.7882353, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.70407844, 0.7667451, 0.74094117, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vuvg6"]
+bg_color = Color(0.21176471, 0.7490196, 0.64705884, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 4
+border_color = Color(0.17788236, 0.6291765, 0.54352945, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0.025, 0.1, 0.13, 0.18)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_emer0"]
+bg_color = Color(0.19905883, 0.70407844, 0.6082353, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.1871153, 0.6618337, 0.57174116, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kfdjh"]
+bg_color = Color(0.24329412, 0.75905883, 0.6611765, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.22869647, 0.7135153, 0.6215059, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0.025, 0.1, 0.13, 0.18)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xdlig"]
+bg_color = Color(0.7490196, 0.8156863, 0.7882353, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.70407844, 0.7667451, 0.74094117, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lptj4"]
+bg_color = Color(0.972549, 0.98039216, 0.9490196, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9141961, 0.92156863, 0.89207846, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0.025, 0.1, 0.13, 0.18)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_74gae"]
+bg_color = Color(0.8627451, 0.9098039, 0.8745098, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8109804, 0.85521567, 0.82203925, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_33vp1"]
+bg_color = Color(0.21176471, 0.7490196, 0.64705884, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.19905883, 0.70407844, 0.6082353, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jpd3y"]
+bg_color = Color(0.8627451, 0.9098039, 0.8745098, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8109804, 0.85521567, 0.82203925, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4h7mh"]
+bg_color = Color(0.95686275, 0.73333335, 0.28235295, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.89945096, 0.6893333, 0.26541176, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4vegw"]
+bg_color = Color(0.8627451, 0.9098039, 0.8745098, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8109804, 0.85521567, 0.82203925, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kwu3u"]
+bg_color = Color(0.95686275, 0.73333335, 0.28235295, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.89945096, 0.6893333, 0.26541176, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4m8u"]
+content_margin_left = 12.0
+content_margin_top = 7.0
+content_margin_right = 12.0
+content_margin_bottom = 7.0
+bg_color = Color(0.972549, 0.98039216, 0.9490196, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9141961, 0.92156863, 0.89207846, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0.025, 0.1, 0.13, 0.18)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4jqwt"]
+content_margin_left = 12.0
+content_margin_top = 7.0
+content_margin_right = 12.0
+content_margin_bottom = 7.0
+bg_color = Color(0.973, 0.98, 0.949, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0.025, 0.1, 0.13, 0.16)
+shadow_size = 5
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_04enw"]
+bg_color = Color(0.972549, 0.98039216, 0.9490196, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9141961, 0.92156863, 0.89207846, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0.025, 0.1, 0.13, 0.18)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rvhgw"]
+bg_color = Color(0.972549, 0.98039216, 0.9490196, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 4
+border_color = Color(0.8169412, 0.8235294, 0.7971765, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0.025, 0.1, 0.13, 0.18)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sj4ew"]
+bg_color = Color(0.9141961, 0.92156863, 0.89207846, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8593443, 0.86627454, 0.8385537, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_83uk5"]
+bg_color = Color(0.97364706, 0.9811765, 0.9510588, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.91522825, 0.9223059, 0.8939953, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0.025, 0.1, 0.13, 0.18)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d778v"]
+bg_color = Color(0.7490196, 0.8156863, 0.7882353, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.70407844, 0.7667451, 0.74094117, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="V3_quest_track"]
+bg_color = Color(0.82, 0.89, 0.84, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 2
+corner_radius_bottom_right = 2
+
+[sub_resource type="StyleBoxFlat" id="V3_quest_fill"]
+bg_color = Color(0.21, 0.72, 0.56, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 2
+corner_radius_bottom_right = 2
+
+[node name="HUD" type="CanvasLayer" unique_id=205164149]
+script = ExtResource("1_kicr4")
+
+[node name="Interface" type="Control" parent="." unique_id=2067589898]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Play" type="Control" parent="Interface" unique_id=776839866]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="StationLabels" type="Control" parent="Interface/Play"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="fish" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "fish"
+
+[node name="fish2" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "fish2"
+
+[node name="cut" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "cut"
+
+[node name="out" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "out"
+
+[node name="stock" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "stock"
+
+[node name="cash" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "cash"
+
+[node name="merge" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "merge"
+
+[node name="crate" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "crate"
+
+[node name="rod" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "rod"
+
+[node name="bag" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "bag"
+
+[node name="machine" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "machine"
+
+[node name="worker" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "worker"
+
+[node name="dock" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "dock"
+
+[node name="Status_cut" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/station_ref = "cut"
+
+[node name="Status_stall" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/station_ref = "stall"
+
+[node name="Status_worker" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/station_ref = "worker"
+
+[node name="Wallet" type="Panel" parent="Interface/Play" unique_id=1428765496]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 24.0
+offset_right = 206.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_el1dq")
+
+[node name="Icon" type="TextureRect" parent="Interface/Play/Wallet" unique_id=1925979714]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 13.0
+offset_right = 56.0
+offset_bottom = 57.0
+mouse_filter = 2
+texture = ExtResource("2_mj13f")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Coins" type="Label" parent="Interface/Play/Wallet" unique_id=601041668]
+layout_mode = 0
+offset_left = 67.0
+offset_top = 9.0
+offset_right = 162.0
+offset_bottom = 45.0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_font_sizes/font_size = 28
+text = "0"
+
+[node name="Caption" type="Label" parent="Interface/Play/Wallet" unique_id=1393669604]
+layout_mode = 0
+offset_left = 69.0
+offset_top = 43.0
+offset_right = 159.0
+offset_bottom = 66.0
+theme_override_colors/font_color = Color(0.5019608, 0.5686275, 0.52156866, 1)
+theme_override_font_sizes/font_size = 10
+text = "COINS"
+
+[node name="Quest" type="Panel" parent="Interface/Play" unique_id=1530339528]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 110.0
+offset_right = 336.0
+offset_bottom = 230.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gmc6u")
+
+[node name="Overline" type="Label" parent="Interface/Play/Quest" unique_id=1098658563]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 12.0
+offset_right = 288.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(0.49019608, 0.5921569, 0.54901963, 1)
+theme_override_font_sizes/font_size = 10
+text = "YOUR NEXT ADVENTURE"
+
+[node name="Objective" type="Label" parent="Interface/Play/Quest" unique_id=1559513203]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 33.0
+offset_right = 286.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_font_sizes/font_size = 18
+text = "Your first catch"
+autowrap_mode = 3
+
+[node name="Status" type="Label" parent="Interface/Play/Quest" unique_id=116592115]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 80.0
+offset_right = 288.0
+offset_bottom = 103.0
+theme_override_colors/font_color = Color(0.5019608, 0.6, 0.5529412, 1)
+theme_override_font_sizes/font_size = 11
+text = "Catch → Cut → Stock → Sell"
+
+[node name="Progress" type="ProgressBar" parent="Interface/Play/Quest"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 102.0
+offset_right = 286.0
+offset_bottom = 106.0
+mouse_filter = 2
+theme_override_styles/background = SubResource("V3_quest_track")
+theme_override_styles/fill = SubResource("V3_quest_fill")
+max_value = 6.0
+step = 1.0
+show_percentage = false
+
+[node name="Inventory" type="Panel" parent="Interface/Play" unique_id=347742834]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -502.0
+offset_top = 24.0
+offset_right = -172.0
+offset_bottom = 94.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1e6lo")
+
+[node name="FishIcon" type="TextureRect" parent="Interface/Play/Inventory" unique_id=1063536554]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 44.0
+offset_bottom = 44.0
+mouse_filter = 2
+texture = ExtResource("3_0h1do")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FishCount" type="Label" parent="Interface/Play/Inventory" unique_id=732255742]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 15.0
+offset_right = 152.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_font_sizes/font_size = 18
+text = "0 / 5"
+
+[node name="FishCaption" type="Label" parent="Interface/Play/Inventory" unique_id=1285613341]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 45.0
+offset_right = 94.0
+offset_bottom = 68.0
+theme_override_colors/font_color = Color(0.5137255, 0.58431375, 0.5372549, 1)
+theme_override_font_sizes/font_size = 10
+text = "CATCH"
+
+[node name="GoodsIcon" type="TextureRect" parent="Interface/Play/Inventory" unique_id=354113099]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 10.0
+offset_right = 204.0
+offset_bottom = 42.0
+mouse_filter = 2
+texture = ExtResource("4_4d46k")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GoodsCount" type="Label" parent="Interface/Play/Inventory" unique_id=600594131]
+layout_mode = 0
+offset_left = 211.0
+offset_top = 15.0
+offset_right = 326.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_font_sizes/font_size = 17
+text = "0 / 10"
+
+[node name="GoodsCaption" type="Label" parent="Interface/Play/Inventory" unique_id=526388274]
+layout_mode = 0
+offset_left = 177.0
+offset_top = 45.0
+offset_right = 318.0
+offset_bottom = 68.0
+theme_override_colors/font_color = Color(0.5137255, 0.58431375, 0.5372549, 1)
+theme_override_font_sizes/font_size = 10
+text = "PACKAGES"
+
+[node name="Collection" type="Button" parent="Interface/Play" unique_id=1666744167]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -156.0
+offset_top = 24.0
+offset_right = -100.0
+offset_bottom = 94.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_colors/font_pressed_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_colors/font_hover_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_colors/font_disabled_color = Color(0.40392157, 0.5176471, 0.49803922, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_4mi7y")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_pkwgd")
+theme_override_styles/hover = SubResource("StyleBoxFlat_d5po8")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_7yoph")
+
+[node name="Icon" type="TextureRect" parent="Interface/Play/Collection" unique_id=1449484715]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 15.0
+offset_right = 46.0
+offset_bottom = 51.0
+mouse_filter = 2
+texture = ExtResource("5_erw67")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SettingsButton" type="Button" parent="Interface/Play" unique_id=2146414894]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -88.0
+offset_top = 24.0
+offset_right = -32.0
+offset_bottom = 94.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_colors/font_pressed_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_colors/font_hover_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_colors/font_disabled_color = Color(0.40392157, 0.5176471, 0.49803922, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_qmm8d")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_t0png")
+theme_override_styles/hover = SubResource("StyleBoxFlat_b6swc")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_27rlx")
+
+[node name="Icon" type="TextureRect" parent="Interface/Play/SettingsButton" unique_id=168934652]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 18.0
+offset_right = 44.0
+offset_bottom = 50.0
+mouse_filter = 2
+texture = ExtResource("6_gonto")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Joystick" type="Control" parent="Interface/Play" unique_id=1188565338]
+anchor_top = 0.5
+anchor_right = 0.42
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_right = -16.0
+offset_bottom = -20.0
+mouse_filter = 2
+script = ExtResource("7_cwdlq")
+
+[node name="Caption" type="Label" parent="Interface/Play/Joystick" unique_id=85553005]
+layout_mode = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = -32.0
+offset_right = 196.0
+offset_bottom = -9.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.95686275, 1, 0.9607843, 1)
+theme_override_font_sizes/font_size = 10
+text = "DRAG TO MOVE · WASD / ARROWS"
+horizontal_alignment = 1
+
+[node name="Action" type="Button" parent="Interface/Play" unique_id=1268884384]
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -148.0
+offset_top = -160.0
+offset_right = -32.0
+offset_bottom = -54.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.40392157, 0.5176471, 0.49803922, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_vuvg6")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_emer0")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kfdjh")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_xdlig")
+text = "
+CAST"
+
+[node name="Icon" type="TextureRect" parent="Interface/Play/Action" unique_id=1537428514]
+layout_mode = 0
+offset_left = 37.0
+offset_top = 13.0
+offset_right = 75.0
+offset_bottom = 51.0
+mouse_filter = 2
+texture = ExtResource("8_o6xly")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Key" type="Label" parent="Interface/Play/Action" unique_id=310444784]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 113.0
+offset_right = 92.0
+offset_bottom = 136.0
+theme_override_colors/font_color = Color(0.95686275, 1, 0.9607843, 1)
+theme_override_font_sizes/font_size = 10
+text = "SPACE"
+horizontal_alignment = 1
+
+[node name="ActionHint" type="Label" parent="Interface/Play" unique_id=294464833]
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -276.0
+offset_top = -220.0
+offset_right = -32.0
+offset_bottom = -172.0
+theme_override_colors/font_color = Color(0.08, 0.25, 0.29, 1)
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_styles/normal = SubResource("StyleBoxFlat_t4m8u")
+autowrap_mode = 3
+
+[node name="Fishing" type="Panel" parent="Interface/Play" unique_id=35402776]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -222.0
+offset_top = -157.0
+offset_right = 222.0
+offset_bottom = -23.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lptj4")
+
+[node name="Icon" type="TextureRect" parent="Interface/Play/Fishing" unique_id=1786898690]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 12.0
+offset_right = 49.0
+offset_bottom = 44.0
+mouse_filter = 2
+texture = ExtResource("3_0h1do")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="Interface/Play/Fishing" unique_id=1311240645]
+layout_mode = 0
+offset_left = 59.0
+offset_top = 15.0
+offset_right = 409.0
+offset_bottom = 45.0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_font_sizes/font_size = 20
+text = "Goldfish · Common"
+
+[node name="Progress" type="ProgressBar" parent="Interface/Play/Fishing" unique_id=1940031075]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 57.0
+offset_right = 422.0
+offset_bottom = 70.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_74gae")
+theme_override_styles/fill = SubResource("StyleBoxFlat_33vp1")
+max_value = 1.0
+show_percentage = false
+
+[node name="TensionLabel" type="Label" parent="Interface/Play/Fishing" unique_id=868080554]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 82.0
+offset_right = 392.0
+offset_bottom = 105.0
+theme_override_colors/font_color = Color(0.4392157, 0.52156866, 0.4509804, 1)
+theme_override_font_sizes/font_size = 14
+text = "✓ Line tension"
+
+[node name="Tension" type="ProgressBar" parent="Interface/Play/Fishing" unique_id=1453573041]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 110.0
+offset_right = 422.0
+offset_bottom = 118.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_jpd3y")
+theme_override_styles/fill = SubResource("StyleBoxFlat_4h7mh")
+max_value = 1.0
+show_percentage = false
+
+[node name="Landed" type="Label" parent="Interface/Play/Fishing" unique_id=123372237]
+layout_mode = 0
+offset_left = 306.0
+offset_top = 17.0
+offset_right = 422.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0.1, 0.33, 0.35, 1)
+theme_override_font_sizes/font_size = 14
+text = "0% LANDED"
+horizontal_alignment = 2
+
+[node name="Dwell" type="ProgressBar" parent="Interface/Play" unique_id=849627959]
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -212.0
+offset_top = -44.0
+offset_right = -32.0
+offset_bottom = -32.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_4vegw")
+theme_override_styles/fill = SubResource("StyleBoxFlat_kwu3u")
+max_value = 1.0
+show_percentage = false
+
+[node name="Guide" type="Label" parent="Interface/Play" unique_id=904565173]
+layout_mode = 0
+offset_left = 566.0
+offset_top = 215.0
+offset_right = 708.0
+offset_bottom = 251.0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_t4m8u")
+text = "↑ CAST · 7 m"
+horizontal_alignment = 1
+
+[node name="Toast" type="Label" parent="Interface/Play" unique_id=123918575]
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 108.0
+offset_right = 300.0
+offset_bottom = 140.0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_4jqwt")
+horizontal_alignment = 1
+
+[node name="Dimmer" type="ColorRect" parent="Interface" unique_id=1120801530]
+visible = false
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.03, 0.12, 0.17, 0.55)
+
+[node name="MergeBoard" parent="Interface" unique_id=1800047475 instance=ExtResource("9_we3sy")]
+layout_mode = 1
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Settings" type="Panel" parent="Interface" unique_id=1980249481]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -255.0
+offset_right = 350.0
+offset_bottom = 255.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_04enw")
+
+[node name="Title" type="Label" parent="Interface/Settings" unique_id=625972172]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 22.0
+offset_right = 555.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_font_sizes/font_size = 27
+text = "Make yourself comfortable"
+
+[node name="Close" type="Button" parent="Interface/Settings" unique_id=295602708]
+layout_mode = 0
+offset_left = 620.0
+offset_top = 19.0
+offset_right = 674.0
+offset_bottom = 65.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_colors/font_pressed_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_colors/font_hover_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_colors/font_disabled_color = Color(0.40392157, 0.5176471, 0.49803922, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_rvhgw")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_sj4ew")
+theme_override_styles/hover = SubResource("StyleBoxFlat_83uk5")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_d778v")
+text = "×"
+
+[node name="musicLabel" type="Label" parent="Interface/Settings" unique_id=2091118924]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 80.0
+offset_right = 218.0
+offset_bottom = 108.0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_font_sizes/font_size = 16
+text = "Music"
+
+[node name="music" type="HSlider" parent="Interface/Settings" unique_id=1951845079]
+layout_mode = 0
+offset_left = 250.0
+offset_top = 80.0
+offset_right = 660.0
+offset_bottom = 110.0
+max_value = 1.0
+step = 0.05
+
+[node name="sfxLabel" type="Label" parent="Interface/Settings" unique_id=1385229912]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 129.0
+offset_right = 218.0
+offset_bottom = 157.0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_font_sizes/font_size = 16
+text = "Sound effects"
+
+[node name="sfx" type="HSlider" parent="Interface/Settings" unique_id=1515320006]
+layout_mode = 0
+offset_left = 250.0
+offset_top = 129.0
+offset_right = 660.0
+offset_bottom = 159.0
+max_value = 1.0
+step = 0.05
+
+[node name="toggle_reel" type="CheckButton" parent="Interface/Settings" unique_id=1698321445]
+layout_mode = 0
+offset_left = 27.0
+offset_top = 178.0
+offset_right = 662.0
+offset_bottom = 222.0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_font_sizes/font_size = 17
+text = "Tap to toggle reeling"
+
+[node name="assist" type="CheckButton" parent="Interface/Settings" unique_id=2023686464]
+layout_mode = 0
+offset_left = 27.0
+offset_top = 224.0
+offset_right = 662.0
+offset_bottom = 268.0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_font_sizes/font_size = 17
+text = "Forgiving fishing assist"
+
+[node name="reduced_motion" type="CheckButton" parent="Interface/Settings" unique_id=1261886177]
+layout_mode = 0
+offset_left = 27.0
+offset_top = 270.0
+offset_right = 662.0
+offset_bottom = 314.0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_font_sizes/font_size = 17
+text = "Reduced motion & flashes"
+
+[node name="low_quality" type="CheckButton" parent="Interface/Settings" unique_id=683120397]
+layout_mode = 0
+offset_left = 27.0
+offset_top = 316.0
+offset_right = 662.0
+offset_bottom = 360.0
+theme_override_colors/font_color = Color(0.09019608, 0.24313726, 0.3137255, 1)
+theme_override_font_sizes/font_size = 17
+text = "Battery saver · 30 FPS"
+
+[node name="Controls" type="Label" parent="Interface/Settings" unique_id=1428188054]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 370.0
+offset_right = 668.0
+offset_bottom = 438.0
+theme_override_colors/font_color = Color(0.44705883, 0.5254902, 0.4745098, 1)
+theme_override_font_sizes/font_size = 14
+text = "WASD / arrows or joystick to walk. Space or action to cast and reel.
+Release to cool the line. Moving away cancels fishing.
+Stand on an upgrade pad to buy; step off to cancel."
+autowrap_mode = 3
+[node name="Debug" type="Button" parent="Interface/Settings"]
+offset_left = 28.0
+offset_top = 452.0
+offset_right = 294.0
+offset_bottom = 495.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.07, 0.23, 0.28, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_rvhgw")
+text = "Developer panel · 1"
+
+[node name="Reset" type="Button" parent="Interface/Settings"]
+offset_left = 312.0
+offset_top = 452.0
+offset_right = 674.0
+offset_bottom = 495.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.75, 0.20, 0.18, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_rvhgw")
+text = "Erase save & start over…"
+
+[node name="DebugPanel" parent="Interface" instance=ExtResource("V4_debug")]
+
+[node name="ResetConfirm" parent="Interface" instance=ExtResource("V4_reset")]
+
+[node name="Orders" type="Panel" parent="Interface/Play"]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -324.0
+offset_top = 118.0
+offset_right = -32.0
+offset_bottom = 289.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rvhgw")
+
+[node name="Title" type="Label" parent="Interface/Play/Orders"]
+offset_left = 18.0
+offset_top = 10.0
+offset_right = 274.0
+offset_bottom = 34.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.11,0.33,0.30,1)
+theme_override_font_sizes/font_size = 15
+text = "CUSTOMER ORDERS"
+
+[node name="Note" type="Label" parent="Interface/Play/Orders"]
+offset_left = 18.0
+offset_top = 139.0
+offset_right = 274.0
+offset_bottom = 164.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.26,0.43,0.35,1)
+theme_override_font_sizes/font_size = 12
+text = "1 fish → 10 slices → 5 packages"
+
+[node name="Order0" type="Label" parent="Interface/Play/Orders"]
+offset_left = 18.0
+offset_top = 40.0
+offset_right = 274.0
+offset_bottom = 69.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 19
+text = "Goldfish · 0/5"
+
+[node name="Order1" type="Label" parent="Interface/Play/Orders"]
+offset_left = 18.0
+offset_top = 72.0
+offset_right = 274.0
+offset_bottom = 101.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 19
+text = "Goldfish · 0/5"
+
+[node name="Order2" type="Label" parent="Interface/Play/Orders"]
+offset_left = 18.0
+offset_top = 104.0
+offset_right = 274.0
+offset_bottom = 133.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 19
+text = "Goldfish · 0/5"
+
+[node name="CutterView" parent="Interface" instance=ExtResource("V6_cutter")]
+
+[node name="machine2" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "machine2"
+
+[node name="machine3" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "machine3"
+
+[node name="dock2" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "dock2"
+
+[node name="dock3" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "dock3"
+
+[node name="worker2" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "worker2"
+
+[node name="worker3" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "worker3"
+
+[node name="worker4" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "worker4"
+
+[node name="fish3" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "fish3"
+
+[node name="fish4" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "fish4"
+
+[node name="cut2" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "cut2"
+
+[node name="out2" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "out2"
+
+[node name="cut3" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "cut3"
+
+[node name="out3" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "out3"
+
+[node name="crate2" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "crate2"
+
+[node name="crate3" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "crate3"
+
+[node name="crate4" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "crate4"
+
+[node name="Zone_machine4" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "machine4"
+
+[node name="Zone_machine5" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "machine5"
+
+[node name="Zone_cut4" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "cut4"
+
+[node name="Zone_cut5" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "cut5"
+
+[node name="Zone_out4" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "out4"
+
+[node name="Zone_out5" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "out5"
+
+[node name="Zone_worker5" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "worker5"
+
+[node name="Zone_worker6" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "worker6"
+
+[node name="Zone_worker7" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "worker7"
+
+[node name="Zone_crate5" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "crate5"
+
+[node name="Zone_crate6" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "crate6"
+
+[node name="Zone_crate7" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "crate7"
+
+[node name="Zone_stock2" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "stock2"
+
+[node name="Zone_stock3" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "stock3"
+
+[node name="Zone_cash2" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "cash2"
+
+[node name="Zone_cash3" parent="Interface/Play/StationLabels" instance=ExtResource("V4_badge")]
+metadata/pad_id = "cash3"

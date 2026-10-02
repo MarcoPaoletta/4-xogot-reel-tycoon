@@ -45,11 +45,20 @@ func cue(kind: String) -> void:
 		"bite":
 			tone(640, 0.12, volume)
 			get_tree().create_timer(0.12).timeout.connect(func(): tone(880, 0.18, volume))
-		"catch", "upgrade", "merge":
+		"catch", "upgrade":
 			tone(523, 0.2, volume)
 			get_tree().create_timer(0.1).timeout.connect(func(): tone(659, 0.25, volume))
 			get_tree().create_timer(0.2).timeout.connect(func(): tone(784, 0.3, volume))
+		"merge_pull": tone(250,0.16,volume*0.60)
+		"merge":
+			tone(523,0.14,volume)
+			tone(1046,0.24,volume*0.65)
+			get_tree().create_timer(0.08).timeout.connect(func(): tone(784,0.24,volume))
+			get_tree().create_timer(0.16).timeout.connect(func(): tone(1318,0.28,volume*0.75))
+		"transfer": tone(480,0.045,volume*0.22)
+		"sale": tone(880,0.06,volume*0.40)
 		"coin": tone(988, 0.12, volume)
+		"slice": tone(760,0.024,volume*0.23); tone(165,0.035,volume*0.17)
 		"cut": tone(150, 0.09, volume * 0.6)
 		"spin": tone(120, 0.3, volume * 0.35)
 		"batch":

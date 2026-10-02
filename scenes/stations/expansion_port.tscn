@@ -1,0 +1,20 @@
+[gd_scene format=3]
+[ext_resource type="PackedScene" path="res://assets/Cute Fish Pack - Feb 2020/FBX/Dock_Long_NoRope.fbx" id="Dock"]
+[sub_resource type="BoxMesh" id="Floor"]
+size = Vector3(2.12,0.2,6.3)
+[sub_resource type="BoxShape3D" id="Collision"]
+size = Vector3(2.12,0.2,6.3)
+[sub_resource type="StandardMaterial3D" id="Wood"]
+albedo_color = Color(0.53,0.31,0.15,1)
+roughness = 0.85
+[node name="Port" type="Node3D"]
+[node name="Dock_Long_NoRope" parent="." instance=ExtResource("Dock")]
+transform = Transform3D(0.28, 0, 0, 0, 0.28, 0, 0, 0, 0.28, 0, 0, 0)
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+position = Vector3(0,0.98,0)
+mesh = SubResource("Floor")
+material_override = SubResource("Wood")
+[node name="Body" type="StaticBody3D" parent="Floor"]
+[node name="Collision" type="CollisionShape3D" parent="Floor/Body"]
+shape = SubResource("Collision")

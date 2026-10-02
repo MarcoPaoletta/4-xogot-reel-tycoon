@@ -9,13 +9,13 @@ func test_main_scene() -> Variant:
 	return valid
 
 func test_scripts_exist() -> Variant:
-	for filename in ["main", "world", "player", "hud", "economy", "audio", "joystick", "fish_card"]:
+	for filename in ["main", "world", "player", "hud", "economy", "audio", "joystick", "merge_board", "fish_slicer", "debug_panel", "in_place_animation"]:
 		var script = load("res://scripts/" + filename + ".gd") as GDScript
 		if script == null: return "Missing script: " + filename
 	return true
 
 func test_required_input_bindings() -> Variant:
-	for action in ["move_left", "move_right", "move_up", "move_down", "interact", "menu"]:
+	for action in ["move_left", "move_right", "move_up", "move_down", "interact", "menu", "debug_toggle"]:
 		var definition = ProjectSettings.get_setting("input/" + action, {})
 		if not definition is Dictionary or definition.get("events", []).is_empty(): return "No bindings for " + action
 	return true
@@ -46,4 +46,71 @@ func test_people_and_locomotion_clips() -> Variant:
 		var valid = animation != null and animation.has_animation("Idle_Breathing") and animation.has_animation("Walk_Forward") and animation.has_animation("Run_Forward")
 		scene.free()
 		if not valid: return "Missing locomotion clips: " + filename
+	return true
+
+func test_authored_hub_tree() -> Variant:
+	var scene = load("res://scenes/world/lakeside.tscn").instantiate()
+	for path in ["Lighting/Sun","Lighting/Atmosphere","Terrain/LakeWater","Terrain/ShoreGround","Workshop/CuttingMachine","Waterfront/SecondDock","MergeGarden/Pad_merge"]:
+		if not scene.has_node(path):
+			scene.free()
+			return "Missing authored hub node: " + path
+	var pad_count = 0
+	for node in scene.find_children("*","Node",true,false):
+		if node.has_meta("pad_id"): pad_count += 1
+	var valid = pad_count == 45 and scene.find_children("*","MeshInstance3D",true,false).size() > 80
+	scene.free()
+	return valid
+
+func test_authored_player() -> Variant:
+	var scene = load("res://scenes/player/fisherman.tscn").instantiate()
+	var valid = scene is CharacterBody3D and scene.get_node("CollisionShape3D").shape is CapsuleShape3D and scene.has_node("Visual/Model") and scene.has_node("Visual/Basket/Carried") and scene.has_node("Visual/Rod")
+	scene.free()
+	return valid
+
+func test_authored_hud() -> Variant:
+	var scene = load("res://scenes/ui/hud.tscn").instantiate()
+	for path in ["Interface/Play/Wallet/Coins","Interface/Play/Joystick","Interface/Play/Action","Interface/Play/Fishing","Interface/MergeBoard","Interface/Settings"]:
+		if not scene.has_node(path):
+			scene.free()
+			return "Missing authored HUD node: " + path
+	var valid = scene.get_node("Interface/Play/Action").focus_mode == Control.FOCUS_NONE
+	scene.free()
+	return valid
+
+func test_authored_merge_workbench() -> bool:
+	var board = load("res://scenes/world/merge_workbench.tscn").instantiate()
+	var ui = load("res://scenes/ui/merge_board.tscn").instantiate()
+	var valid = board.get_node("Slots").get_child_count()==16 and board.has_node("Preview/Result") and board.get_node("Effects/AnimationPlayer").has_animation("merge") and board.has_node("Solid/Shape") and ui.has_node("Details/Next") and not ui.has_node("Details/Confirm") and ui.find_children("*","SubViewport",true,false).is_empty()
+	board.free()
+	ui.free()
+	return valid
+
+func test_authored_feedback_and_debug() -> bool:
+	var main = load("res://scenes/main.tscn").instantiate()
+	var valid = main.has_node("Lakeside/Workshop/CutStage") and main.has_node("Lakeside/MergeGarden/Workbench/Slots/Slot15") and main.has_node("HUD/Interface/Play/Orders/Order2") and main.has_node("HUD/Interface/DebugPanel/Panel/Money1000") and main.has_node("HUD/Interface/ResetConfirm/Panel/Confirm") and main.has_node("Lakeside/Market/Customer0/OrderBubble/Fish")
+	main.free()
+	return valid
+
+func test_main_instances_prefabs() -> bool:
+	var scene = load("res://scenes/main.tscn").instantiate()
+	var valid = scene.get_child_count() == 6 and scene.has_node("Lakeside") and scene.has_node("Fisherman") and scene.has_node("HUD") and scene.has_node("Soundscape") and scene.get_node("FollowCamera").projection == Camera3D.PROJECTION_PERSPECTIVE and is_zero_approx(scene.get_node("FollowCamera").rotation.y)
+	scene.free()
+	return valid
+
+func test_editable_station_prefabs() -> Variant:
+	var requirements = {
+		"cutting_station":["CuttingMachine","InputCrate","OutputCrate","Pad_cut","Pad_out","Status"],
+		"market":["MarketStand_1","SaleStock","CashPile","Pad_stock","Pad_cash","Status"],
+		"merge_garden":["Goldfish","Clownfish","Puffer","Swordfish","Pad_merge","Barrel"],
+		"worker_station":["Worker","WorkerCrateFish","CatchCrate","Pad_crate","Status"]}
+	for filename in requirements:
+		var scene = load("res://scenes/stations/"+filename+".tscn").instantiate()
+		for path in requirements[filename]:
+			if not scene.has_node(path):
+				scene.free()
+				return "Missing station component: " + filename + "/" + path
+		if filename=="merge_garden" and scene.has_node("DisplayWater0"):
+			scene.free()
+			return "Removed barrel-top disc returned"
+		scene.free()
 	return true

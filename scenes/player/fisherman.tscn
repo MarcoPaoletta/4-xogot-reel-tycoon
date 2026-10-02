@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://c57xlg4d2362l"]
+
+[ext_resource type="Script" uid="uid://bxh58drt6vm81" path="res://scripts/player.gd" id="1_yyjtv"]
+[ext_resource type="PackedScene" uid="uid://b06n3wxtj8wy8" path="res://assets/itHappy Characters GLB/Pescador.glb" id="2_1e3eo"]
+[ext_resource type="PackedScene" uid="uid://dwtgaicfkeycb" path="res://assets/Cute Fish Pack - Feb 2020/FBX/FishingRod_Lvl1.fbx" id="4_4ty35"]
+
+[ext_resource type="Script" path="res://scripts/backpack_stack.gd" id="V6_stack"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_f3v05"]
+radius = 0.28
+height = 1.7
+
+[node name="Fisherman" type="CharacterBody3D" unique_id=1655402572]
+floor_snap_length = 0.45
+script = ExtResource("1_yyjtv")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=495411885]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("CapsuleShape3D_f3v05")
+
+[node name="Visual" type="Node3D" parent="." unique_id=507023149]
+
+[node name="Model" type="Node3D" parent="Visual" unique_id=1036314944 instance=ExtResource("2_1e3eo")]
+transform = Transform3D(0.97, 0, 0, 0, 0.97, 0, 0, 0, 0.97, 0, 0, 0)
+
+[node name="Basket" type="Node3D" parent="Visual" unique_id=740211156]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.23, 0.88, -0.5)
+
+[node name="Carried" type="Node3D" parent="Visual/Basket" unique_id=1955955282]
+script = ExtResource("V6_stack")
+
+[node name="Rod" type="Node3D" parent="Visual" unique_id=420201556]
+transform = Transform3D(1, 0, 0, 0, 0.81915206, 0.57357645, 0, -0.57357645, 0.81915206, -0.43, 1.1, 0.1)
+visible = false
+
+[node name="Model" type="Node3D" parent="Visual/Rod" unique_id=2066825572 instance=ExtResource("4_4ty35")]
+transform = Transform3D(0.27, 0, 0, 0, 0.27, 0, 0, 0, 0.27, 0, 0, 0)
+
+[node name="Count" type="Label3D" parent="Visual/Basket"]
+position = Vector3(0, 0.75, 0)
+billboard = 1
+pixel_size = 0.003
+font_size = 36
+outline_size = 5
+modulate = Color(0.97, 1, 0.93, 1)
+outline_modulate = Color(0.08, 0.24, 0.28, 1)
+text = ""
+visible = false

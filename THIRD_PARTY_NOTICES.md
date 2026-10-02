@@ -16,3 +16,6 @@ Both `assets/itHappy Creative Characters Free/` and `assets/itHappy Characters G
 
 ## Audio
 Gameplay tones and the simple background melody are synthesized by the game's own GDScript. No external recordings or music files were added.
+
+## UI and shaders
+The small SVG interface icons, interface styling, ground/wood/water/interaction-zone shaders and primitive board/effect geometry are authored for this project. The customer request-bubble SVG is also original project artwork. No external icon pack or new machine model was introduced. Supplied locomotion is duplicated and made in-place only at runtime; source GLBs and their animation data remain unchanged.

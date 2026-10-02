@@ -1,0 +1,104 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/itHappy Characters GLB/Pescador.glb" id="1_84kjy"]
+[ext_resource type="PackedScene" path="res://assets/Cute Fish Pack - Feb 2020/FBX/FishingRod_Lvl1.fbx" id="2_22ptq"]
+[ext_resource type="PackedScene" path="res://assets/Medieval Village Pack - Dec 2020/Props/FBX/Crate.fbx" id="3_0v34v"]
+
+[ext_resource type="Shader" path="res://shaders/interaction_zone.gdshader" id="V3_zone"]
+[ext_resource type="Texture2D" path="res://ui/icons/fish.svg" id="V3_icon_fish"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_etaks"]
+albedo_color = Color(0.32941177, 0.8117647, 0.75686276, 1)
+roughness = 0.85
+emission_enabled = true
+emission = Color(0.04941177, 0.12176471, 0.11352942, 0.15)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_n83qf"]
+top_radius = 0.82
+bottom_radius = 0.82
+height = 0.035
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ilvrp"]
+albedo_color = Color(0.8352941, 0.9411765, 0.85490197, 1)
+roughness = 0.85
+
+[sub_resource type="TorusMesh" id="TorusMesh_3ptxq"]
+inner_radius = 0.755
+outer_radius = 0.855
+
+[sub_resource type="PlaneMesh" id="V3_plane_crate"]
+size = Vector2(2.0, 1.8)
+
+[sub_resource type="ShaderMaterial" id="V3_material_crate"]
+resource_local_to_scene = true
+shader = ExtResource("V3_zone")
+shader_parameter/zone_size = Vector2(2.0, 1.8)
+shader_parameter/accent = Color(0.18, 0.72, 0.57, 1)
+shader_parameter/icon = ExtResource("V3_icon_fish")
+shader_parameter/active = 0.0
+shader_parameter/ready = 0.0
+shader_parameter/complete = 0.0
+shader_parameter/progress = -1.0
+
+[node name="Crew" type="Node3D"]
+metadata/fisher_slot = 5
+
+[node name="WorkerCrateFish" type="Node3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-8.2,0.055,7.8)
+metadata/world_ref = "fisher5_crate_stack"
+
+[node name="Worker" type="Node3D" parent="."]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -5.85, 0, -3.7)
+visible = false
+metadata/world_ref = "fisher5_worker"
+
+[node name="Pescador" parent="Worker" instance=ExtResource("1_84kjy")]
+transform = Transform3D(0.97, 0, 0, 0, 0.97, 0, 0, 0, 0.97, 0, 0, 0)
+
+[node name="FishingRod_Lvl1" type="Node3D" parent="Worker"]
+transform = Transform3D(1, 0, 0, 0, 0.76604444, 0.6427876, 0, -0.6427876, 0.76604444, -0.4, 1, -0.1)
+
+[node name="FishingRod_Lvl1" parent="Worker/FishingRod_Lvl1" instance=ExtResource("2_22ptq")]
+transform = Transform3D(0.27, 0, 0, 0, 0.27, 0, 0, 0, 0.27, 0, 0, 0)
+
+[node name="Status" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.6, 1.9, -0.1)
+visible = false
+pixel_size = 0.0045
+billboard = 1
+modulate = Color(0.08, 0.24, 0.28, 1)
+outline_modulate = Color(0.96, 1, 0.9, 1)
+text = "FISHER CRATE  0 / 5"
+font_size = 48
+outline_size = 6
+metadata/station_label = &"fisher5_worker"
+
+[node name="CatchCrate" type="Node3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-8.2,0,6.4)
+
+[node name="Crate" parent="CatchCrate" instance=ExtResource("3_0v34v")]
+transform = Transform3D(4.8, 0, 0, 0, 4.8, 0, 0, 0, 4.8, 0, 0, 0)
+
+[node name="Pad_crate" type="Node3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,-8.2,0.055,7.8)
+visible = false
+metadata/pad_id = "crate6"
+metadata/pad_kind = "crate"
+metadata/fisher_slot = 5
+metadata/radius = 0.82
+
+[node name="Surface" type="MeshInstance3D" parent="Pad_crate"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
+material_override = SubResource("V3_material_crate")
+mesh = SubResource("V3_plane_crate")
+cast_shadow = 0
+
+[node name="Caption" type="Label3D" parent="Pad_crate"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28, 0.23)
+pixel_size = 0.0035
+billboard = 1
+modulate = Color(0.08, 0.24, 0.28, 1)
+outline_modulate = Color(0.96, 1, 0.9, 1)
+text = "PICK UP"
+font_size = 46
+outline_size = 3

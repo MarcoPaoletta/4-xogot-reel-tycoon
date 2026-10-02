@@ -1,0 +1,109 @@
+[gd_scene format=3]
+[sub_resource type="StyleBoxFlat" id="Panel"]
+bg_color = Color(0.96,0.99,0.92,0.97)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_left = 18
+corner_radius_bottom_right = 18
+shadow_color = Color(0.025,0.13,0.16,0.24)
+shadow_size = 5
+[sub_resource type="StyleBoxFlat" id="Button"]
+bg_color = Color(0.08,0.46,0.39,1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_left = 16
+corner_radius_bottom_right = 16
+[sub_resource type="StyleBoxFlat" id="Track"]
+bg_color = Color(0.76,0.86,0.78,1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+[sub_resource type="StyleBoxFlat" id="Fill"]
+bg_color = Color(1,0.70,0.25,1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+[node name="CutterView" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+[node name="Header" type="Panel" parent="."]
+offset_left = 32.0
+offset_top = 24.0
+offset_right = 374.0
+offset_bottom = 112.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Panel")
+[node name="Title" type="Label" parent="Header"]
+offset_left = 20.0
+offset_top = 13.0
+offset_right = 326.0
+offset_bottom = 44.0
+theme_override_colors/font_color = Color(0.08,0.25,0.29,1)
+theme_override_font_sizes/font_size = 24
+text = "SAW WORKSHOP"
+[node name="Subtitle" type="Label" parent="Header"]
+offset_left = 20.0
+offset_top = 49.0
+offset_right = 326.0
+offset_bottom = 74.0
+theme_override_colors/font_color = Color(0.22,0.41,0.38,1)
+theme_override_font_sizes/font_size = 15
+text = "10 real slices → 5 colored packages"
+[node name="Close" type="Button" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -186.0
+offset_top = 24.0
+offset_right = -32.0
+offset_bottom = 84.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1,1,0.95,1)
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("Button")
+text = "← BACK"
+[node name="Readout" type="Panel" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -224.0
+offset_top = -120.0
+offset_right = 224.0
+offset_bottom = -32.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Panel")
+[node name="Species" type="Label" parent="Readout"]
+offset_left = 18.0
+offset_top = 10.0
+offset_right = 430.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.08,0.25,0.29,1)
+theme_override_font_sizes/font_size = 20
+text = "Waiting for a catch"
+horizontal_alignment = 1
+[node name="Progress" type="ProgressBar" parent="Readout"]
+offset_left = 18.0
+offset_top = 43.0
+offset_right = 430.0
+offset_bottom = 52.0
+max_value = 10.0
+show_percentage = false
+theme_override_styles/background = SubResource("Track")
+theme_override_styles/fill = SubResource("Fill")
+[node name="Hint" type="Label" parent="Readout"]
+offset_left = 18.0
+offset_top = 57.0
+offset_right = 430.0
+offset_bottom = 77.0
+theme_override_colors/font_color = Color(0.22,0.41,0.38,1)
+theme_override_font_sizes/font_size = 13
+text = "Business keeps running · two slices in every package"
+horizontal_alignment = 1

@@ -1,0 +1,107 @@
+[gd_scene format=3]
+
+[sub_resource type="StyleBoxFlat" id="Panel"]
+bg_color = Color(0.98, 0.99, 0.95, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_left = 18
+corner_radius_bottom_right = 18
+shadow_color = Color(0.02, 0.10, 0.13, 0.24)
+shadow_size = 10
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="Button"]
+bg_color = Color(0.86, 0.94, 0.86, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_left = 10
+corner_radius_bottom_right = 10
+border_width_bottom = 3
+border_color = Color(0.64, 0.79, 0.68, 1)
+
+[sub_resource type="StyleBoxFlat" id="Pressed"]
+bg_color = Color(0.65, 0.86, 0.73, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_left = 10
+corner_radius_bottom_right = 10
+
+[sub_resource type="StyleBoxFlat" id="Danger"]
+bg_color = Color(0.80, 0.28, 0.24, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_left = 10
+corner_radius_bottom_right = 10
+
+[node name="ResetConfirm" type="Control"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Shade" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.03, 0.10, 0.14, 0.68)
+
+[node name="Panel" type="Panel" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -290.0
+offset_top = -155.0
+offset_right = 290.0
+offset_bottom = 155.0
+theme_override_styles/panel = SubResource("Panel")
+
+[node name="Title" type="Label" parent="Panel"]
+offset_left = 26.0
+offset_top = 22.0
+offset_right = 554.0
+offset_bottom = 62.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.07, 0.23, 0.28, 1)
+theme_override_font_sizes/font_size = 25
+text = "Erase everything and restart?"
+autowrap_mode = 3
+
+[node name="Warning" type="Label" parent="Panel"]
+offset_left = 26.0
+offset_top = 81.0
+offset_right = 554.0
+offset_bottom = 220.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.07, 0.23, 0.28, 1)
+theme_override_font_sizes/font_size = 17
+text = "This removes your coins, fish, packages, upgrades, workers, discoveries, display bonuses and preferences. The backup is also erased.
+
+This cannot be undone."
+autowrap_mode = 3
+
+[node name="Cancel" type="Button" parent="Panel"]
+offset_left = 26.0
+offset_top = 236.0
+offset_right = 276.0
+offset_bottom = 288.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.07, 0.23, 0.28, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("Button")
+theme_override_styles/hover = SubResource("Pressed")
+theme_override_styles/pressed = SubResource("Pressed")
+text = "Keep my game"
+
+[node name="Confirm" type="Button" parent="Panel"]
+offset_left = 304.0
+offset_top = 236.0
+offset_right = 554.0
+offset_bottom = 288.0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("Danger")
+theme_override_styles/hover = SubResource("Danger")
+theme_override_styles/pressed = SubResource("Pressed")
+text = "ERASE & RESTART"
+

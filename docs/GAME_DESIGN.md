@@ -1,3 +1,5 @@
+> **Current V6 working design (2026-10-02).** Latest user direction supersedes earlier preview-confirm and generic-customer proposals: five-fish catches, immediate matching-drop merges, specific persistent fish orders, and physical resource piles. V1 and its save path remain preserved. No new release/tag is created.
+
 # Reel Tycoon — Game Design Document
 
 ## Vision
@@ -28,14 +30,14 @@ Species have distinct, readable fight patterns: Goldfish is steady, Clownfish bu
 Target an early catch in roughly 6–10 seconds. Failure costs only time: a soft snap, splash, and quick recast. The first tutorial catch is forgiving.
 
 ### 2. Carry and Process
-Catches arc into a visible basket/stack, bounce once, and settle. Start with capacity for five fish; upgrades make larger hauls possible. Full capacity gives a clear “Deliver or merge” prompt instead of allowing more catches.
+Catches arc into a visible basket/stack, bounce once, and settle. Each landing grants up to five fish. Start with room for 100 raw fish (upgrades: 200/300/400) and 500 packages (1000/1500/2000). Full capacity gives a clear “Deliver or merge” prompt instead of allowing more catches.
 
 At the cutting machine, stepping on its button transfers fish one at a time. Each fish visibly leaves inventory only when accepted. The saw spins up, the frame gives a small rhythmic kick, and processed goods pop into an output crate. Keep processing playful and clean: no gore.
 
 The machine produces sale stock, **not money**. Capacity limits pause transfer without deleting fish. The player carries output to the stall; processing and stocking are distinct, visible steps.
 
 ### 3. Sell and Grow
-Human customers queue at the stall, buy stocked portions, and leave happily. Initial orders accept any portion so species shortages cannot block the loop. Use all ten customer appearances for variety; keep the visible queue small.
+Human customers queue at the stall, buy stocked portions, and leave happily. Every active customer has a persistent species request shown by a real fish in a speech bubble. Sell only matching species (old mixed-catch saved portions remain compatible). Maintain three active requests, retain a reachable Goldfish request, and prioritize currently unrequested stocked species when replacing customers. Use all ten customer appearances for variety; keep the visible queue small.
 
 Sales build a visible cash pile. The collection pad sweeps coins toward the HUD in a short cascade; the wallet updates accurately once per collection. Purchase pads spend wallet cash to unlock rods, capacity, faster machines, new docks, and hired fishers.
 
@@ -69,7 +71,7 @@ Camera shake is subtle and optional; never rotate the camera for impact. Include
 ## Progression and Economy
 The opening teaches one system at a time: land a fish, deliver to the machine, stock the stall, collect cash, buy a visible upgrade, then introduce merge jars and hiring. Aim for the first sale within two minutes and the first upgrade within five; verify with new players.
 
-One soft currency: coins. Sale prices scale with species rarity. Give each raw fish a stored total sale value, divided across its processed portions, so cutting never accidentally multiplies earnings. A merge's sale value must not beat selling both inputs; its reward is discovery and permanent bonuses.
+One soft currency: coins. Sale prices scale with species rarity. Give each raw fish a stored total sale value, divided exactly across five species-colored processed portions, so cutting never accidentally multiplies earnings. A merge's sale value must not beat selling both inputs; its reward is discovery and permanent bonuses.
 
 Tune machine output and customer demand against actual catch rates. Show bottlenecks clearly: “Crate full,” “Needs stock,” or “More customers.” No spoilage, bankruptcy, forced ads, premium currency, or prestige reset in the initial scope. Monetization is not specified by the high concept and is outside this design.
 
@@ -90,3 +92,36 @@ Build in order: **one juicy catch → complete catch-to-cash loop → upgrade �
 Save coins, inventories, machine queues, sale stock, uncollected cash, upgrades, discoveries, displayed fish, and workers. Save after committed transactions and on suspend; visual effects must never duplicate rewards after reload. Pause fishing on focus loss. Keep a valid backup save.
 
 Done means a new player understands the loop without explanation; catches, cutting, collecting, and merging feel satisfying repeatedly; rewards remain exact through capacity limits and save/load; and all controls work on touch and Mac. Target 60 fps, with a stable 30 fps quality option on the weakest supported device, tested in exported builds. Do not declare the game polished until its busiest expanded hub stays readable and responsive.
+
+## V5 transaction and presentation contracts
+
+- Catch → carry → CUT → OUT pickup → STOCK → species-specific sale → CASH remain separate transactions. Five portions sum to the original fish value; species color survives processing, storage, delivery and saves.
+- The original cutter feeds a whole supplied fish and visibly separates ten capped mesh pieces before producing packages. Cosmetic pieces and arcs never award output. Reduced motion removes feed/slice bounce.
+- Matching fish dropped together on the actual lakeside workbench merge immediately. Invalid/outside drops are harmless. Keep the result protected, commit exact indices once, lock repeated input during the reveal, and provide 16-socket pages for all carried fish.
+- Camera entry/return is a smooth fixed-yaw perspective transition in the same world. No isolated SubViewport, isometric camera, or hidden player/world swap.
+- Collection pads display layered 3×3 resource piles, not “X to collect” quantity signs. Accepted fish/packages fly into persistent backpack slots; collected coins fly to the wallet UI. Visual caps do not truncate the economy.
+- Purchase pads use white corner outlines, hammer stamps, real costs and cancellable 0.9s dwell. Coin trails happen only after the atomic purchase; there is no partial-investment mechanic.
+- Queue/output/stock/worker capacities: 200 fish per machine / 1000 packages per machine / 1000 stocked packages / 100 fish per fisher. Transfers move schools of up to five every 0.08s in one saved transaction; base cutting is about 0.95s/fish; sales about 0.35s/portion; worker schools every 4s. Tune against exported performance and playtests, not only automated checks.
+- Physical **1** opens debug tools in development builds. Settings requires confirmation to reset. Reset validates a fresh checksum file and removes old recovery files so old progress cannot reappear.
+
+## V6 expanded marina / full-size stacks
+- The physical island is 64×44m with matching ground collision, a wider shore, promenade and authored gardens. Movement remains screen-aligned at 3.1m/s, with fixed-yaw perspective cameras. New workshops stay east of the customer entrance/exit lane.
+- Three playable conveyor/saw workshops: the original plus SAW II (220 coins) and SAW III (480). Each owns its own 200-fish input queue and 1000-package output. CUT and OUT remain separate interactions; the shared cut-speed upgrade improves all workshops.
+- Four ports: the original, the legacy second dock (110), Puffer Port (240), and Swordfish Port (480). The new ports specialize their five-fish catch schools. Four fishers: the original hire (90), then three hires (180/360/600). Each produces five real fish every four seconds into its own 100-fish crate; no worker grants free currency.
+- Raw capacity is 100/200/300/400 and goods capacity is 500/1000/1500/2000. `backpack_stack.gd` batches full-size supplied geometry by species/material. **Every item is represented, with no maximum stack height and no shrinking.** The fixed camera does not zoom out to fit giant towers. Count text stays near the player's shoulder.
+- Fish preserve 0.50m and packages 0.32m from piles through accepted-object flight to attachment. Positional arrival bounce replaces item-scale animation. Five-item transfers emit/save once and retain exact species/value; large collections do not issue five redundant saves per beat.
+- `stations/cutting_conveyor.tscn` authors the moving tread belt, rollers, spinning toothed saw, lowering carriage, guard, chips and a non-current watch camera. The supplied sawmill remains the wooden support. Ten actual mesh sections (with fresh cut faces) bundle in pairs into the existing five colored packages: **whole-fish sale value is unchanged**.
+- Tap **SAW** at any active CUT pad for a shared-world close-up. Business continues while movement/picking are locked; BACK, Settings and Debug return through the established camera/input guards. Reduced Motion suppresses feed/bounce/spin/chips and freezes the water, not transactions.
+- Water uses stronger smooth vertex waves, moving cel bands, broken highlight strokes and scalloped shoreline wash. `shore_z=-2.45` remains aligned to the authored sand.
+- `data.expansions` is optional in old schema-1 payloads. Checksums are verified before empty new plots are supplied; old wallets, inventories, upgrades, legacy integer packages and backup recovery remain intact. No V1 save reset or new release/tag is performed.
+- `tests/game/test_expansion.gd` adds full-size/1000-item batches, above-old-cap pickup, independent live workshops/fishers, purchases, V1 payload loading, nested save validation, physical ground, real ten-piece geometry and cutter-camera/modal checks. Embedded-editor profiling is not exported-device, thermal or pacing acceptance. Asset licenses and real-device release validation remain required.
+
+## V7 requested UI and serving-area pass
+- Removed the wooden box from `Fisherman/Visual/Basket`, leaving `Carried` and its full-size, uncapped stacks intact. Removed all four `MergeGarden/DisplayWater*` top-disc meshes; the authored barrels and display bonuses remain.
+- Customer requests now form one rigid camera-facing card: background, species-colored fish glyph, name and exact accepted-package progress share the same plane. No independently billboarded text/model offsets. Three stalls support **nine active orders**. Shared stock/cash remain single authoritative balances; their visible piles are partitioned across three stands, never triplicated. STOCK and CASH work at each stand.
+- Purchase footprints fill bottom-to-top in green during the cancellable 0.9-second dwell. Purchase hammer stamps are suppressed, floor text shows the full price rather than `0 / price`, and completed purchase badges disappear. Currency is still charged only after a successful complete dwell.
+- Added **two more buyable saws** (760/1100 coins), for five total. Added **three adjacent fisher hires** (900/1200/1500), for seven total; they share the existing original/second/Puffer piers. All saws have independent queues/output and all fishers have independent crates. Existing expansion payloads append empty locked slots only after checksum and content validation.
+- Added two editable market stand scenes east of the original hub, serving six additional customers. The district expands to 90×54m ground with matching collision and connected promenade; old border foliage is moved clear of customer lanes. Camera yaw and movement remain screen-aligned.
+- The world merge camera is centered horizontally on all sixteen sockets. Full-width picking replaces the crowded right sidebar; short instructions and a compact bottom strip retain KEEP, DISPLAY and pages without covering the board. Immediate matching-drop merging, reservations and all-page inventory reachability remain intact.
+- **Validation: 481 checks, zero failures**: structure 13, economy/full loop 157, controller/board 44, movement/feedback 34, touch 7, quality 8, juice 75, expansions 80, new marina/UI 63. Captured and inspected coherent customer cards, the centered board and half-green purchase feedback. This is not exported-device performance or safe-area acceptance.
+- Testing launches `tests/game/validation_sandbox.tscn`, which redirects saving to a separate path and disables it before entering the main scene. The previously reported gameplay-save recovery incident remains unresolved; this pass does not claim to reconstruct the lost progress. No commit/tag/push is created.

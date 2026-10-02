@@ -1,158 +1,67 @@
 extends CanvasLayer
+## Authored HUD scene: this script binds controls, it does not construct the UI.
 signal action_pressed
 signal action_released
-signal collection_requested
-signal settings_requested
 var hub: Node3D
-var root: Control
-var joystick: Control
-var coins: Label
-var inventory: Label
-var objective: Label
-var business_status: Label
-var toast_label: Label
-var action_button: Button
-var context_label: Label
-var fish_panel: PanelContainer
-var fish_title: Label
-var progress: ProgressBar
-var tension: ProgressBar
-var tension_text: Label
-var dwell: ProgressBar
-var modal_layer: ColorRect
-var modal_body: VBoxContainer
-var modal_open = false
-var modal_kind = ""
-var guide: Label
-var merge_committing = false
-var touch_action_id = -1
-var held = false
-var toast_time = 0.0
-var coin_display = 0.0
-const NAVY = Color("163b47")
-const MINT = Color("80efd0")
-const GOLD = Color("ffdb79")
+@onready var root: Control = $Interface
+@onready var play: Control = $Interface/Play
+@onready var joystick: Control = $Interface/Play/Joystick
+@onready var coins: Label = $Interface/Play/Wallet/Coins
+@onready var inventory: Label = $Interface/Play/Inventory/FishCount
+@onready var goods_label: Label = $Interface/Play/Inventory/GoodsCount
+@onready var objective: Label = $Interface/Play/Quest/Objective
+@onready var business_status: Label = $Interface/Play/Quest/Status
+@onready var toast_label: Label = $Interface/Play/Toast
+@onready var action_button: Button = $Interface/Play/Action
+@onready var context_label: Label = $Interface/Play/ActionHint
+@onready var fish_panel: Panel = $Interface/Play/Fishing
+@onready var fish_title: Label = $Interface/Play/Fishing/Title
+@onready var progress: ProgressBar = $Interface/Play/Fishing/Progress
+@onready var tension: ProgressBar = $Interface/Play/Fishing/Tension
+@onready var tension_text: Label = $Interface/Play/Fishing/TensionLabel
+@onready var landed: Label = $Interface/Play/Fishing/Landed
+@onready var dwell: ProgressBar = $Interface/Play/Dwell
+@onready var guide: Label = $Interface/Play/Guide
+@onready var board: Control = $Interface/MergeBoard
+@onready var settings: Control = $Interface/Settings
+@onready var debug_panel: Control = $Interface/DebugPanel
+@onready var reset_confirm: Control = $Interface/ResetConfirm
+@onready var cutter_view: Control = $Interface/CutterView
+@onready var station_badges: Control = $Interface/Play/StationLabels
+var queued_modal: String = ""
+var reset_pending: bool = false
+var modal_open: bool = false
+var modal_kind: String = ""
+var held: bool = false
+var touch_action_id: int = -1
+var toast_time: float = 0
+var coin_display: float = 0
+var merge_committing: bool = false
+var danger_last: bool = false
+const NAVY = Color("173e50")
+const MINT = Color("36bfa5")
+const GOLD = Color("f4bb48")
 
-func style(color: Color, radius: int = 18, border: Color = Color.TRANSPARENT) -> StyleBoxFlat:
+func style(color: Color, radius: int = 12) -> StyleBoxFlat:
 	var s = StyleBoxFlat.new()
 	s.bg_color = color
-	s.corner_radius_top_left = radius
-	s.corner_radius_top_right = radius
-	s.corner_radius_bottom_left = radius
-	s.corner_radius_bottom_right = radius
-	s.content_margin_left = 18
-	s.content_margin_right = 18
-	s.content_margin_top = 12
-	s.content_margin_bottom = 12
-	if border.a > 0:
-		s.border_color = border
-		s.set_border_width_all(2)
+	s.set_corner_radius_all(radius)
 	return s
 
-func label(text: String, font_size: int = 18, color: Color = Color.WHITE) -> Label:
-	var l = Label.new()
-	l.text = text
-	l.add_theme_font_size_override("font_size", font_size)
-	l.add_theme_color_override("font_color", color)
-	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return l
-
-func button(text: String, callback: Callable, color: Color = MINT) -> Button:
-	var b = Button.new()
-	b.text = text
-	b.custom_minimum_size.y = 46
-	b.add_theme_stylebox_override("normal", style(color, 13))
-	b.add_theme_stylebox_override("hover", style(color.lightened(0.12), 13))
-	b.add_theme_stylebox_override("pressed", style(color.darkened(0.15), 13))
-	b.add_theme_stylebox_override("disabled", style(Color("56737c"), 13))
-	b.add_theme_stylebox_override("focus", style(Color.TRANSPARENT, 13, Color.WHITE))
-	b.add_theme_color_override("font_color", NAVY)
-	b.add_theme_color_override("font_hover_color", NAVY)
-	b.add_theme_color_override("font_pressed_color", NAVY)
-	b.add_theme_font_size_override("font_size", 18)
-	if callback.is_valid(): b.pressed.connect(callback)
-	return b
-
-func panel() -> PanelContainer:
-	var p = PanelContainer.new()
-	p.add_theme_stylebox_override("panel", style(Color(0.055, 0.16, 0.20, 0.94), 20))
-	return p
-
-func bar(color: Color) -> ProgressBar:
-	var b = ProgressBar.new()
-	b.max_value = 1
-	b.show_percentage = false
-	b.custom_minimum_size = Vector2(0, 16)
-	b.add_theme_stylebox_override("background", style(Color("0b2734"), 8))
-	b.add_theme_stylebox_override("fill", style(color, 8))
-	return b
-
 func _ready() -> void:
-	root = Control.new()
-	root.name = "Interface"
-	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(root)
-	var top = HBoxContainer.new()
-	top.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	top.offset_left = 22
-	top.offset_right = -22
-	top.offset_top = 18
-	top.add_theme_constant_override("separation", 12)
-	root.add_child(top)
-	var wallet = panel()
-	top.add_child(wallet)
-	var wallet_box = VBoxContainer.new()
-	wallet_box.add_theme_constant_override("separation", 0)
-	wallet.add_child(wallet_box)
-	wallet_box.add_child(label("REEL TYCOON", 12, MINT))
-	coins = label("0 coins", 27, GOLD)
-	wallet_box.add_child(coins)
-	var spacer = Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	top.add_child(spacer)
-	var bag = panel()
-	top.add_child(bag)
-	inventory = label("FISH 0 / 5   •   PACKAGES 0 / 10", 16)
-	bag.add_child(inventory)
-	top.add_child(button("Collection", func(): collection_requested.emit(), Color("d8f3e5")))
-	top.add_child(button("Settings", func(): settings_requested.emit(), Color("d8f3e5")))
-	var objective_panel = panel()
-	objective_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
-	objective_panel.position = Vector2(22, 110)
-	root.add_child(objective_panel)
-	var objective_box = VBoxContainer.new()
-	objective_panel.add_child(objective_box)
-	objective_box.add_child(label("YOUR NEXT STEP", 11, MINT))
-	objective = label("Walk to the dock → Cast", 17)
-	objective_box.add_child(objective)
-	business_status = label("CUT 0   ·   OUT 0   ·   STOCK 0", 12, Color("bbd8d8"))
-	objective_box.add_child(business_status)
-	joystick = Control.new()
-	joystick.set_script(load("res://scripts/joystick.gd"))
-	joystick.name = "Joystick"
-	root.add_child(joystick)
-	joystick.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	joystick.offset_left = 22
-	joystick.offset_top = -188
-	joystick.offset_right = 182
-	joystick.offset_bottom = -28
-	var movement_hint = label("WASD / ARROWS", 11, Color("d9f6eb"))
-	movement_hint.position = Vector2(26, 157)
-	joystick.add_child(movement_hint)
-	var actions = VBoxContainer.new()
-	root.add_child(actions)
-	actions.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	actions.offset_left = -253
-	actions.offset_right = -22
-	actions.offset_top = -142
-	actions.offset_bottom = -24
-	context_label = label("Walk onto a station pad", 14)
-	context_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	actions.add_child(context_label)
-	action_button = button("CAST  ·  SPACE", Callable())
-	action_button.custom_minimum_size = Vector2(230, 62)
+	hub = get_parent()
+	board.hud = self
+	board.bind_workbench(hub.get_node("Lakeside/MergeGarden/Workbench"), hub.get_node("FollowCamera"))
+	debug_panel.hud = self
+	cutter_view.get_node("Close").pressed.connect(close_modal)
+	settings.get_node("Debug").visible = OS.is_debug_build()
+	settings.get_node("Debug").pressed.connect(show_debug)
+	settings.get_node("Reset").pressed.connect(request_reset)
+	reset_confirm.get_node("Panel/Cancel").pressed.connect(cancel_reset)
+	reset_confirm.get_node("Panel/Confirm").pressed.connect(confirm_reset)
+	$Interface/Play/Collection.pressed.connect(show_collection)
+	$Interface/Play/SettingsButton.pressed.connect(show_settings)
+	$Interface/Settings/Close.pressed.connect(close_modal)
 	action_button.button_down.connect(func():
 		if touch_action_id == -1:
 			held = true
@@ -161,266 +70,319 @@ func _ready() -> void:
 		if touch_action_id == -1:
 			held = false
 			action_released.emit())
-	actions.add_child(action_button)
-	dwell = bar(GOLD)
-	dwell.visible = false
-	actions.add_child(dwell)
-	fish_panel = panel()
-	root.add_child(fish_panel)
-	fish_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
-	fish_panel.offset_left = -240
-	fish_panel.offset_right = 240
-	fish_panel.offset_top = -181
-	fish_panel.offset_bottom = -24
-	var fish_box = VBoxContainer.new()
-	fish_panel.add_child(fish_box)
-	fish_title = label("Goldfish • HOLD TO REEL", 19, MINT)
-	fish_box.add_child(fish_title)
-	fish_box.add_child(label("LANDING PROGRESS", 11))
-	progress = bar(MINT)
-	fish_box.add_child(progress)
-	tension_text = label("LINE TENSION  ·  SAFE", 11)
-	fish_box.add_child(tension_text)
-	tension = bar(GOLD)
-	fish_box.add_child(tension)
-	fish_panel.visible = false
-	toast_label = label("", 20, GOLD)
-	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	root.add_child(toast_label)
-	toast_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
-	toast_label.offset_left = -340
-	toast_label.offset_right = 340
-	toast_label.offset_top = 100
-	toast_label.add_theme_color_override("font_shadow_color", NAVY)
-	toast_label.add_theme_constant_override("shadow_offset_y", 2)
-	guide = label("↑ CAST", 20, GOLD)
-	guide.add_theme_color_override("font_shadow_color", NAVY)
-	guide.add_theme_constant_override("shadow_offset_y", 2)
-	root.add_child(guide)
+	for key in ["music", "sfx"]:
+		var slider: HSlider = settings.get_node(key)
+		slider.value = Economy.data.settings[key]
+		slider.value_changed.connect(func(value): Economy.update_setting(key, value))
+	for key in ["toggle_reel", "assist", "reduced_motion", "low_quality"]:
+		var toggle: CheckButton = settings.get_node(key)
+		toggle.button_pressed = Economy.data.settings[key]
+		toggle.toggled.connect(func(value): Economy.update_setting(key, value); hub.apply_settings())
 	Economy.changed.connect(refresh)
 	coin_display = float(Economy.data.coins)
+	board.hide()
+	settings.hide()
+	fish_panel.hide()
+	dwell.hide()
 	refresh()
 
+
 func _process(delta: float) -> void:
-	coin_display = move_toward(coin_display, float(Economy.data.coins), maxf(25, absf(coin_display - float(Economy.data.coins)) * 6) * delta)
-	coins.text = "%d coins" % int(round(coin_display))
+	coin_display = move_toward(coin_display, float(Economy.data.coins), maxf(30, absf(coin_display - float(Economy.data.coins)) * 7) * delta)
+	coins.text = "%d" % int(round(coin_display))
 	toast_time -= delta
-	toast_label.visible = toast_time > 0
+	toast_label.visible = toast_time > 0 and not modal_open
+	toast_label.modulate.a = clampf(toast_time * 2, 0, 1)
+	update_orders()
+	if cutter_view.visible: update_cutter_view()
 
 func refresh() -> void:
 	if inventory == null: return
-	inventory.text = "FISH %d / %d  ·  PACKAGES %d / %d" % [Economy.data.raw.size(), Economy.capacity(), Economy.data.goods.size(), Economy.goods_capacity()]
-	var steps = ["Walk to the dock → Cast", "Take your catch to CUT", "Pick up the OUT packages", "Deliver packages to STOCK", "Collect your sales from CASH", "Buy a better rod • 30 coins", "Merge pairs, display discoveries & hire help"]
+	inventory.text = "%d / %d" % [Economy.data.raw.size(), Economy.capacity()]
+	goods_label.text = "%d / %d" % [Economy.data.goods.size(), Economy.goods_capacity()]
+	var steps = ["Your first catch", "Bring your catch to Cut", "Pick up your packages", "Stock the lakeside market", "Collect your earnings", "A better rod awaits", "Discover something rare"]
 	objective.text = steps[mini(6, int(Economy.data.tutorial))]
-	business_status.text = "CUT %d  ·  OUT %d  ·  STOCK %d  ·  CASH %d" % [Economy.data.queue.size(), Economy.data.output.size(), Economy.data.stock.size(), int(Economy.data.cash)]
+	$Interface/Play/Quest/Progress.value = mini(6, int(Economy.data.tutorial))
+	$Interface/Play/Quest/Progress.visible = int(Economy.data.tutorial)<6
+	$Interface/Play/Quest/Overline.text = "NEXT STEP" if int(Economy.data.tutorial)<6 else "YOUR NEXT GOAL"
+	if Economy.data.raw.size() >= Economy.capacity(): business_status.text = "Basket full · deliver or merge"
+	elif Economy.data.output.size() >= Economy.OUTPUT_CAP: business_status.text = "Output full · pick up packages"
+	elif not Economy.data.goods.is_empty(): business_status.text = "Take your packages to STOCK"
+	elif int(Economy.data.cash) > 0: business_status.text = "Coin pile ready at CASH"
+	elif not Economy.data.stock.is_empty(): business_status.text = "Market stocked · customers are buying"
+	else: business_status.text = "Catch → Cut → Stock → Sell"
+
+func update_orders() -> void:
+	if hub == null or not hub.initialized: return
+	var active: Array = []
+	for customer in hub.world.customers:
+		if customer.state != "leaving": active.append(customer)
+	active.sort_custom(func(a,b): return int(a.slot)<int(b.slot))
+	var on_screen = 0
+	for customer in active:
+		var point = hub.camera.unproject_position(customer.person.get_node("OrderBubble").global_position)
+		if get_viewport().get_visible_rect().grow(-100).has_point(point): on_screen += 1
+	$Interface/Play/Orders.visible = on_screen == 0
+	for i in 3:
+		var label: Label = $Interface/Play/Orders.get_node("Order%d"%i)
+		if i >= active.size(): label.text = "Next customer arriving…"; continue
+		var customer: Dictionary = active[i]
+		var species = int(customer.get("species",0))
+		var have = Economy.PORTIONS-int(customer.get("remaining",Economy.PORTIONS))
+		label.text = "%s · %d/%d" % [Economy.SPECIES[species],have,Economy.PORTIONS]
+		label.modulate = Color("1a6550") if Economy.stock_count(species)>0 else Color("283e45")
 
 func toast(text: String) -> void:
 	toast_label.text = text
-	toast_time = 3.0
+	toast_time = 3.2
 
 func context(text: String, caption: String, enabled: bool = true) -> void:
 	context_label.text = text
-	action_button.text = caption
 	action_button.disabled = not enabled
+	var title = "CAST" if caption.begins_with("CAST") else ("REEL" if "REEL" in caption or "TOGGLE" in caption else ("MERGE" if "MERGE" in caption else ("SAW" if "SAW" in caption else "WALK")))
+	if not enabled:
+		if "PICKING" in caption: title = "PICK UP"
+		elif "STOCKING" in caption: title = "STOCK"
+		elif "COLLECTING" in caption or "CASH" in caption: title = "CASH"
+		elif "FULL" in caption or "BLOCKED" in caption: title = "FULL"
+		elif "EMPTY" in caption: title = "EMPTY"
+		elif "FISH" in caption: title = "FISH"
+		elif "BUY" in caption: title = "BUY"
+		elif "NEED" in caption: title = "NEED"
+		elif "COMPLETE" in caption: title = "DONE"
+	action_button.text = "\n" + title
+	var icon = preload("res://ui/icons/hook.svg")
+	if title == "MERGE": icon = preload("res://ui/icons/book.svg")
+	elif title == "SAW": icon = preload("res://ui/icons/saw.svg")
+	elif hub.world.pad_kind(hub.nearest_station) in ["out","stock"]: icon = preload("res://ui/icons/box.svg")
+	elif hub.nearest_station == "cash": icon = preload("res://ui/icons/coin.svg")
+	elif hub.world.pad_kind(hub.nearest_station) in ["cut","crate"]: icon = preload("res://ui/icons/fish.svg")
+	action_button.get_node("Icon").texture = icon
+	action_button.get_node("Key").visible = true
+	action_button.get_node("Key").text = "SPACE" if enabled else ("MOVE" if title=="WALK" else ("STAND" if hub.world.is_purchase_pad(hub.nearest_station) else "AUTO"))
+
+func show_cutter() -> void:
+	if modal_open or hub.camera_transition or hub.world.pad_kind(hub.nearest_station) != "cut": return
+	lock_ui("cutter")
+	cutter_view.show()
+	hub.focus_cutter()
+
+func update_cutter_view() -> void:
+	var machine = hub.world.machine_factory(hub.cutter_slot)
+	cutter_view.get_node("Readout/Species").text = "%s · %d / 10 slices"%[Economy.SPECIES[machine.species],machine.cut_count] if machine.active else "Feed another catch at CUT"
+	cutter_view.get_node("Readout/Progress").value = machine.cut_count
 
 func fishing(species: int, state: String, landing: float, strain: float, warning: bool) -> void:
-	fish_panel.visible = state != "idle"
+	fish_panel.visible = state != "idle" and not modal_open
 	if state == "idle": return
-	fish_title.text = Economy.SPECIES[species] + " • " + Economy.RARITIES[species] + (" · Waiting for a bite…" if state in ["casting", "waiting"] else " · Hold / release to cool")
+	fish_title.text = Economy.SPECIES[species] + "  ·  " + Economy.RARITIES[species]
 	progress.value = landing
+	landed.text = "%d%% LANDED" % int(landing * 100)
 	tension.value = strain
-	var danger = strain > 0.82
-	tension_text.text = "! LUNGE INCOMING — RELEASE" if warning else ("!! DANGER — RELEASE TO COOL" if danger else "✓ SAFE  ·  LINE TENSION %d%%" % int(strain * 100))
-	tension.add_theme_stylebox_override("fill", style(Color("ff8c7d") if danger or warning else GOLD, 8))
+	var danger = strain > 0.82 or warning
+	tension_text.text = "! Lunge — let go" if warning else ("! Release to cool" if danger else "✓ Line tension · %d%%" % int(strain * 100))
+	if danger != danger_last:
+		danger_last = danger
+		tension.add_theme_stylebox_override("fill", style(Color("f17d68") if danger else GOLD, 7))
 
-func open_modal(title: String, subtitle: String, kind: String) -> void:
-	close_modal()
+func lock_ui(kind: String) -> void:
 	modal_open = true
 	modal_kind = kind
 	held = false
+	touch_action_id = -1
 	joystick.reset()
-	if hub != null: hub.cancel_fishing()
-	modal_layer = ColorRect.new()
-	modal_layer.color = Color(0.01, 0.07, 0.1, 0.72)
-	root.add_child(modal_layer)
-	modal_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var p = panel()
-	modal_layer.add_child(p)
-	p.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	p.offset_left = -385
-	p.offset_right = 385
-	p.offset_top = -286
-	p.offset_bottom = 286
-	var box = VBoxContainer.new()
-	box.add_theme_constant_override("separation", 12)
-	p.add_child(box)
-	var title_row = HBoxContainer.new()
-	box.add_child(title_row)
-	var l = label(title, 28, MINT)
-	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_row.add_child(l)
-	title_row.add_child(button("Close  ×", close_modal, Color("d8f3e5")))
-	var sub = label(subtitle, 15)
-	sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	box.add_child(sub)
-	var scroll = ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	box.add_child(scroll)
-	modal_body = VBoxContainer.new()
-	modal_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	modal_body.add_theme_constant_override("separation", 12)
-	scroll.add_child(modal_body)
+	joystick.enabled = false
+	play.hide()
+	$Interface/Dimmer.show()
+	if kind in ["collection","cutter"]: $Interface/Dimmer.hide()
+	hub.cancel_fishing()
 
 func close_modal() -> void:
-	if is_instance_valid(modal_layer):
-		modal_layer.queue_free()
-		modal_layer = null
+	if board.busy or reset_pending: return
+	if reset_confirm.visible:
+		cancel_reset()
+		return
+	if modal_kind == "returning": return
+	board.deactivate()
+	settings.hide()
+	debug_panel.hide()
+	cutter_view.hide()
+	$Interface/Dimmer.hide()
+	if modal_kind in ["collection","cutter"] or hub.camera_mode in ["board","cutter"]:
+		modal_kind = "returning"
+		hub.return_from_workbench()
+		return
+	finish_close_modal()
+
+func finish_close_modal() -> void:
 	modal_open = false
 	modal_kind = ""
-	touch_action_id = -1
 	held = false
+	touch_action_id = -1
+	joystick.reset()
+	joystick.enabled = true
+	play.show()
+	var next = queued_modal
+	queued_modal = ""
+	if next == "settings": show_settings()
+	elif next == "debug": show_debug()
 
 func show_collection() -> void:
-	var at_station = hub != null and hub.nearest_station == "merge"
-	open_modal("The lake collection", "Drag matching fish together, or use a recipe. Keep protects a fish from automatic cutting. Visit MERGE to combine or display.", "collection")
-	modal_body.add_child(label("ACTIVE TOTALS  ·  Sales +%d%%   Reel +%d%%   Cutting +%d%%" % [int(round(Economy.bonus("sale") * 100)), int(round(Economy.bonus("control") * 100)), int(round(Economy.bonus("machine") * 100))], 15, MINT))
-	modal_body.add_child(label("CARRIED FISH  ·  Drag matching cards to preview a merge", 12, GOLD))
-	var cards = HFlowContainer.new()
-	cards.add_theme_constant_override("h_separation", 10)
-	cards.add_theme_constant_override("v_separation", 10)
-	modal_body.add_child(cards)
-	for i in Economy.data.raw.size():
-		var f: Dictionary = Economy.data.raw[i]
-		var card = PanelContainer.new()
-		card.set_script(load("res://scripts/fish_card.gd"))
-		card.species = int(f.species)
-		card.inventory_index = i
-		card.custom_minimum_size = Vector2(164, 140)
-		card.add_theme_stylebox_override("panel", style(Color("315767"), 14))
-		var text = label("%s • %s\n%d coins" % [Economy.SPECIES[int(f.species)], str(int(f.species) + 1) + "★", int(f.value)], 16)
-		var contents = VBoxContainer.new()
-		card.add_child(contents)
-		contents.add_child(text)
-		var keep = button("Kept ✓" if f.get("reserved", false) else "Keep", toggle_reservation.bind(i), Color("d7e1ff") if f.get("reserved", false) else Color("c3e7dc"))
-		keep.add_theme_font_size_override("font_size", 15)
-		contents.add_child(keep)
-		if at_station: card.merge_requested.connect(confirm_merge)
-		cards.add_child(card)
-	if Economy.data.raw.is_empty(): cards.add_child(label("Your basket is empty. Catch a fish first.", 16))
-	var colors = [Color("ffce71"), Color("ffae80"), Color("b6ef9e"), Color("a4d9ff")]
-	var bonuses = Economy.DISPLAY_BONUSES
-	for s in 4:
-		var row = HBoxContainer.new()
-		modal_body.add_child(row)
-		var discovered = bool(Economy.data.discoveries[s])
-		var displayed = bool(Economy.data.displayed[s])
-		var text = label((Economy.SPECIES[s] if discovered else "???") + "  ·  " + bonuses[s] + ("  ✓ DISPLAYED" if displayed else ""), 17, colors[s])
-		text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row.add_child(text)
-		if not displayed:
-			var b = button("Display", display_species.bind(s), colors[s])
-			b.disabled = not at_station or not has_fish(s)
-			row.add_child(b)
-		if s < 3:
-			var recipe = button("2 %s → %s  ·  Preview merge" % [Economy.SPECIES[s], Economy.SPECIES[s + 1]], confirm_merge.bind(s), Color("d5eceb"))
-			recipe.disabled = not at_station or count_fish(s) < 2
-			modal_body.add_child(recipe)
-	modal_body.add_child(label("Water-filled barrel displays are prototype jar stand-ins.", 12, Color("9dc1c5")))
-
-func count_fish(species: int) -> int:
-	var count = 0
-	for f in Economy.data.raw:
-		if int(f.species) == species: count += 1
-	return count
-
-func has_fish(species: int) -> bool:
-	return count_fish(species) > 0
-
-func confirm_merge(species: int) -> void:
-	if species >= 3 or count_fish(species) < 2: return
-	merge_committing = false
-	open_modal("A new discovery", "Preview before committing. Two fish are consumed exactly once. Unmatched species never merge.", "confirm")
-	modal_body.add_child(label("2 × %s\n↓\n1 × %s • %s  ·  %d coins" % [Economy.SPECIES[species], Economy.SPECIES[species + 1], Economy.RARITIES[species + 1], Economy.VALUES[species + 1]], 28, GOLD))
-	modal_body.add_child(label("Available display bonus: " + Economy.DISPLAY_BONUSES[species + 1], 18, MINT))
-	var note = label("Discovery stays forever. The result is kept safe from CUT until you uncheck Keep. Display it to activate its bonus.", 16)
-	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	modal_body.add_child(note)
-	modal_body.add_child(button("Merge pair", commit_merge.bind(species)))
-	modal_body.add_child(button("Keep both fish", show_collection, Color("d5eceb")))
-
-func commit_merge(species: int) -> void:
-	if merge_committing: return
-	merge_committing = true
-	var result = Economy.merge(species)
-	if result >= 0:
-		close_modal()
-		hub.merge_effect(result)
-		toast(Economy.SPECIES[result] + " • " + Economy.RARITIES[result] + "! Kept safe for merge or display.")
-	else:
-		show_collection()
-
-func display_species(species: int) -> void:
-	if Economy.display_fish(species):
-		close_modal()
-		hub.display_effect(species)
-		toast(Economy.SPECIES[species] + " displayed • bonus active!")
-	else:
-		show_collection()
+	if board.busy or reset_confirm.visible or modal_kind in ["collection", "cutter", "returning"]: return
+	close_modal()
+	lock_ui("collection")
+	board.open(hub.nearest_station == "merge")
 
 func show_settings() -> void:
-	open_modal("Make yourself comfortable", "Casting stops while this menu is open. Your business saves after every transaction.", "settings")
-	for item in [["music", "Music volume"], ["sfx", "Sound effects"]]:
-		modal_body.add_child(label(item[1], 17))
-		var slider = HSlider.new()
-		slider.min_value = 0
-		slider.max_value = 1
-		slider.step = 0.05
-		slider.value = Economy.data.settings[item[0]]
-		slider.custom_minimum_size.y = 32
-		var setting_key: String = item[0]
-		slider.value_changed.connect(func(value): Economy.update_setting(setting_key, value))
-		modal_body.add_child(slider)
-	for item in [["toggle_reel", "Tap to toggle reeling (instead of holding)"], ["assist", "Forgiving fishing assist"], ["reduced_motion", "Reduced motion and flashes"], ["low_quality", "Battery saver • 30 FPS"]]:
-		var check = CheckButton.new()
-		check.text = item[1]
-		check.button_pressed = Economy.data.settings[item[0]]
-		check.custom_minimum_size.y = 44
-		check.add_theme_font_size_override("font_size", 18)
-		var setting_key: String = item[0]
-		check.toggled.connect(func(value): Economy.update_setting(setting_key, value); hub.apply_settings())
-		modal_body.add_child(check)
-	modal_body.add_child(label("HOW TO PLAY\nWASD / arrows or joystick to walk. Space / action to cast & reel.\nRelease to cool the line. Moving away cancels fishing.\nWalk onto CUT → OUT → STOCK → CASH pads.\nStand on an upgrade pad for 1.2 seconds to buy. Step off to cancel.\nWorkers fill crates, never your wallet. No offline earnings.", 15, Color("cce6e5")))
+	if board.busy or reset_confirm.visible: return
+	if modal_kind in ["collection", "cutter", "returning"]:
+		queued_modal = "settings"
+		close_modal()
+		return
+	close_modal()
+	lock_ui("settings")
+	settings.show()
 
-# Native multitouch action: the joystick and reel can use separate fingers.
-# Mouse emulation alone only represents one touch and is insufficient here.
+func show_debug() -> void:
+	if not OS.is_debug_build() or board.busy or reset_confirm.visible: return
+	if modal_kind in ["collection", "cutter", "returning"]:
+		queued_modal = "debug"
+		close_modal()
+		return
+	close_modal()
+	lock_ui("debug")
+	debug_panel.show()
+	debug_panel.get_node("Panel/PauseBusiness").set_pressed_no_signal(hub.debug_pause_business)
+
+func request_reset() -> void:
+	if reset_pending or modal_kind != "settings": return
+	reset_confirm.show()
+
+func cancel_reset() -> void:
+	if reset_pending: return
+	reset_confirm.hide()
+
+func confirm_reset() -> void:
+	if reset_pending or not reset_confirm.visible or modal_kind != "settings": return
+	reset_pending = true
+	reset_confirm.get_node("Panel/Confirm").disabled = true
+	if not Economy.reset_all_data():
+		reset_pending = false
+		reset_confirm.get_node("Panel/Confirm").disabled = false
+		reset_confirm.get_node("Panel/Warning").text = "Reset could not be saved. Your current game is still loaded. Check available storage and try again."
+		return
+	joystick.reset()
+	for action in ["move_left", "move_right", "move_up", "move_down", "interact", "menu", "debug_toggle"]: Input.action_release(action)
+	# Recreate transient timers, customers, player and cameras as well as saved data.
+	get_tree().call_deferred("reload_current_scene")
+
+func update_station_badges() -> void:
+	if not is_instance_valid(hub.camera) or hub.world.pads.is_empty(): return
+	var viewport_size = get_viewport().get_visible_rect().size
+	for badge in station_badges.get_children():
+		var anchor: Vector3
+		var show_badge = not modal_open
+		var title = ""
+		var detail = ""
+		var active_badge = false
+		if badge.has_meta("pad_id"):
+			var id: String = badge.get_meta("pad_id")
+			var pad: Dictionary = hub.world.pads[id]
+			show_badge = show_badge and pad.node.is_visible_in_tree()
+			# Near edge, not under the player's feet or the center stencil.
+			anchor = pad.node.to_global(Vector3(0, 0.055, pad.size.y * 0.5 + 0.22))
+			active_badge = id == hub.nearest_station
+			var names = {"fish":"CAST", "fish2":"RARE DOCK", "cut":"CUT", "out":"OUT", "stock":"STOCK", "cash":"CASH", "merge":"MERGE", "crate":"PICK UP", "rod":"ROD", "bag":"BASKET", "machine":"CUT SPEED", "worker":"HIRE FISHER", "dock":"NEW DOCK"}
+			title = names.get(id,String(pad.title) if String(pad.title)!="" else String(pad.kind).to_upper())
+			match String(pad.kind):
+				"fish", "fish2": detail = "Basket full" if Economy.data.raw.size() >= Economy.capacity() else "Catch 5 · Space / action"
+				"cut": detail = "Output full · collect" if Economy.output_for(int(pad.machine_slot)).size() >= Economy.OUTPUT_CAP else "%d fish ready · %d queued" % [Economy.processable_count(), Economy.queue_for(int(pad.machine_slot)).size()]
+				"out": detail = "%d packages ready" % Economy.output_for(int(pad.machine_slot)).size()
+				"stock": detail = "%d / %d stocked" % [Economy.data.stock.size(),Economy.STOCK_CAP]
+				"cash": detail = "%d coins to collect" % Economy.data.cash
+				"merge": detail = "Open the workbench"
+				"crate": detail = "%d / %d catches" % [Economy.crate_for(int(pad.fisher_slot)).size(),Economy.WORKER_CAP]
+				_:
+					var cost = Economy.upgrade_cost(id)
+					show_badge = show_badge and cost >= 0
+					if id in ["rod", "bag", "machine"]: title += " · %d" % (int(Economy.data[id]) + 1)
+					detail = "✓ Complete" if cost < 0 else ("%d coins · stand to buy" % cost if Economy.data.coins >= cost else "%d coins · need %d" % [cost, cost - int(Economy.data.coins)])
+		else:
+			var id: String = badge.get_meta("station_ref")
+			show_badge = false
+			anchor = hub.world.labels[id].global_position
+			if id == "worker": show_badge = false
+			match id:
+				"cut": title = "CUTTER"; detail = "Queue %d/%d · out %d/%d" % [Economy.data.queue.size(),Economy.QUEUE_CAP,Economy.data.output.size(),Economy.OUTPUT_CAP]
+				"stall": title = "MARKET"; detail = "%d/%d · fish orders" % [Economy.data.stock.size(),Economy.STOCK_CAP]
+				"worker": title = "FISHER CRATE"; detail = "%d/%d · stops when full" % [Economy.data.worker_crate.size(),Economy.WORKER_CAP]
+		if hub.camera.is_position_behind(anchor): show_badge = false
+		var point = hub.camera.unproject_position(anchor)
+		badge.position = (point - Vector2(badge.size.x * 0.5, 0)).round()
+		var rect: Rect2 = badge.get_global_rect()
+		show_badge = show_badge and rect.position.x >= 12 and rect.end.x <= viewport_size.x - 12 and rect.position.y >= 105 and rect.end.y <= viewport_size.y - 24
+		for protected in [$Interface/Play/Quest, $Interface/Play/Wallet, $Interface/Play/Inventory, $Interface/Play/Collection, $Interface/Play/SettingsButton,$Interface/Play/Orders]:
+			if rect.intersects(protected.get_global_rect()): show_badge = false
+		badge.visible = show_badge
+		badge.get_node("Title").text = title
+		badge.get_node("Subtitle").text = detail
+		badge.get_node("Subtitle").visible = badge.has_meta("pad_id") and (hub.world.is_purchase_pad(String(badge.get_meta("pad_id"))) or hub.world.pad_kind(String(badge.get_meta("pad_id"))) in ["fish","fish2","merge"])
+		badge.size.y = 50 if badge.get_node("Subtitle").visible else 30
+		badge.modulate = Color("b8f4d9") if active_badge else Color.WHITE
+
+func confirm_merge(species: int) -> void:
+	if board.busy or board.transitioning or not board.can_merge: return
+	var pair: Array[int] = []
+	for slot in board.slots:
+		if int(Economy.data.raw[int(board.slots[slot])].species)==species: pair.append(slot)
+	if pair.size()>=2:
+		board.preview.assign([pair[0],pair[1]])
+		board.commit_preview()
+
+func commit_merge(_species: int) -> void:
+	# Compatibility only. Matching drops already commit immediately.
+	board.commit_preview()
+
+func display_species(species: int) -> void:
+	if board.busy: return
+	for slot in board.slots:
+		if int(Economy.data.raw[int(board.slots[slot])].species) == species:
+			board.selected = slot
+			board.display_selected()
+			return
+
 func _input(event: InputEvent) -> void:
-	if not event is InputEventScreenTouch: return
+	# Godot can emit the synthetic mouse press BEFORE the native touch. The action
+	# is owned by native touch, so never let that emulation toggle reeling twice.
+	if not modal_open and event is InputEventMouseButton and event.device == -1 and (touch_action_id >= 0 or action_button.get_global_rect().has_point(event.position)):
+		get_viewport().set_input_as_handled()
+		return
+	if not event is InputEventScreenTouch or modal_open: return
 	if not event.pressed and event.index == touch_action_id:
 		touch_action_id = -1
 		held = false
 		action_button.modulate = Color.WHITE
 		action_released.emit()
 		get_viewport().set_input_as_handled()
-	elif event.pressed and not modal_open and not action_button.disabled and touch_action_id == -1 and action_button.get_global_rect().has_point(event.position):
+	elif event.pressed and not action_button.disabled and touch_action_id == -1 and action_button.get_global_rect().has_point(event.position):
 		touch_action_id = event.index
 		held = true
-		action_button.modulate = Color(0.8, 0.9, 0.85)
+		action_button.modulate = Color(0.86, 0.95, 0.91)
 		action_pressed.emit()
 		get_viewport().set_input_as_handled()
 
-func toggle_reservation(index: int) -> void:
-	if index < 0 or index >= Economy.data.raw.size(): return
-	Economy.reserve_fish(index, not Economy.data.raw[index].get("reserved", false))
-	show_collection()
-
 func cash_sweep(start: Vector2) -> void:
+	# Cosmetic only; the saved economy was committed before this animation.
 	var end = coins.get_global_rect().get_center()
-	for i in (3 if Economy.data.settings.reduced_motion else 8):
-		var coin = label("●", 29, GOLD)
-		root.add_child(coin)
-		var origin = start + Vector2(randf_range(-20, 20), randf_range(-10, 10))
-		coin.position = origin
+	for i in (5 if Economy.data.settings.reduced_motion else 27):
+		var sprite = TextureRect.new()
+		sprite.texture = preload("res://ui/icons/coin.svg")
+		sprite.size = Vector2(24, 24)
+		sprite.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		play.add_child(sprite)
+		var origin = start + Vector2((i%3-1)*12,-floori(float(i)/9)*7+(floori(float(i)/3)%3-1)*9)
+		sprite.position = origin
 		var tween = create_tween()
-		tween.tween_interval(i * 0.04)
-		tween.tween_method(func(t: float): coin.position = origin.lerp(end, t) + Vector2(0, -sin(t * PI) * 35), 0.0, 1.0, 0.6)
-		tween.tween_callback(coin.queue_free)
+		tween.tween_interval(i * 0.018)
+		tween.tween_property(sprite, "position", end, 0.58).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tween.tween_callback(sprite.queue_free)

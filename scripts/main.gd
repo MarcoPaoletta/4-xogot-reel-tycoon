@@ -8,6 +8,9 @@ var audio: Node
 var nearest_station = ""
 var station_time = 0.0
 var machine_time = 0.0
+var extra_machine_times = [0.0,0.0,0.0,0.0]
+var extra_worker_times = [0.0,0.0,0.0,0.0,0.0,0.0]
+var cutter_slot = 0
 var worker_time = 0.0
 var sale_time = 0.0
 var dwell_time = 0.0
@@ -31,222 +34,278 @@ var line_mesh: ImmediateMesh
 var focus_paused = false
 var initialized = false
 var stack_signature = ""
+var camera_mode: String = "follow"
+var camera_transition: bool = false
+var camera_tween: Tween
+var debug_pause_business: bool = false
+var impact_tween: Tween
+var transfer_chain: int = 0
+signal camera_settled
 
 func _ready() -> void:
-	world = Node3D.new()
-	world.name = "Lakeside"
-	world.set_script(load("res://scripts/world.gd"))
-	add_child(world)
-	world.build()
-	audio = Node.new()
-	audio.name = "Soundscape"
-	audio.set_script(load("res://scripts/audio.gd"))
-	add_child(audio)
-	player = CharacterBody3D.new()
-	player.name = "Fisherman"
-	player.set_script(load("res://scripts/player.gd"))
+	world = $Lakeside
+	audio = $Soundscape
+	player = $Fisherman
+	camera = $FollowCamera
+	hud = $HUD
 	player.hub = self
-	add_child(player)
-	player.position = Vector3(-5, 0.05, -0.5)
-	player.visual = world.model(world.PEOPLE + "Pescador.glb", player, Vector3.ZERO, 0.97)
-	player.animation = player.visual.find_child("AnimationPlayer", true, false)
+	player.visual = $Fisherman/Visual
+	player.animation = player.visual.find_child("AnimationPlayer",true,false)
+	player.basket = $Fisherman/Visual/Basket
+	player.rod = $Fisherman/Visual/Rod
 	player.play_animation("Idle_Breathing")
-	player.basket = Node3D.new()
-	player.visual.add_child(player.basket)
-	player.basket.position = Vector3(0.48, 1.1, -0.33)
-	world.model(world.PROPS + "Crate.fbx", player.basket, Vector3(-0.23, 0, -0.12), 2.9)
-	var carried = Node3D.new()
-	carried.name = "Carried"
-	player.basket.add_child(carried)
 	create_rod()
-	camera = Camera3D.new()
-	camera.name = "FollowCamera"
-	camera.fov = 50
-	camera.near = 0.1
-	camera.far = 180
-	add_child(camera)
-	camera.current = true
-	camera.position = player.position + Vector3(0, 8.5, 8.5)
-	camera.look_at(player.position + Vector3(0, 0, -1.5))
-	hud = CanvasLayer.new()
-	hud.name = "HUD"
-	hud.set_script(load("res://scripts/hud.gd"))
-	hud.hub = self
-	add_child(hud)
 	hud.action_pressed.connect(interact)
-	hud.action_released.connect(func(): pass)
-	hud.collection_requested.connect(hud.show_collection)
-	hud.settings_requested.connect(hud.show_settings)
-	line = MeshInstance3D.new()
-	line.name = "FishingLine"
-	line_mesh = ImmediateMesh.new()
-	line.mesh = line_mesh
-	var line_mat = StandardMaterial3D.new()
-	line_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	line_mat.albedo_color = Color("fff3ce")
-	line.material_override = line_mat
-	add_child(line)
+	line = $FishingLine
+	line_mesh = line.mesh as ImmediateMesh
 	Economy.changed.connect(on_state_changed)
 	initialized = true
 	on_state_changed()
 	apply_settings()
-	hud.toast(Economy.load_notice if not Economy.load_notice.is_empty() else "Welcome to your little lakeside business")
+	hud.toast(Economy.load_notice if not Economy.load_notice.is_empty() else "Welcome back to the lake")
 
 func create_rod() -> void:
-	if is_instance_valid(player.rod):
-		player.visual.remove_child(player.rod)
-		player.rod.queue_free()
-	player.rod = world.model(world.FISH + "FishingRod_Lvl%d.fbx" % (int(Economy.data.rod) + 1), player.visual, Vector3(-0.43, 1.1, 0.1), 0.27)
-	player.rod.rotation_degrees.x = -35
+	if not is_instance_valid(player.rod): return
+	for child in player.rod.get_children():
+		player.rod.remove_child(child)
+		child.queue_free()
+	world.model(world.FISH + "FishingRod_Lvl%d.fbx" % (int(Economy.data.rod)+1), player.rod, Vector3.ZERO, 0.27)
 	player.rod.visible = fishing_state != "idle"
-	player.rod.set_meta("level", int(Economy.data.rod))
+	player.rod.set_meta("level",int(Economy.data.rod))
 
 func on_state_changed() -> void:
 	world.refresh()
-	var signature = JSON.stringify([Economy.data.raw, Economy.data.goods])
+	var signature = JSON.stringify([world.fish_signature(Economy.data.raw), world.package_signature(Economy.data.goods)])
 	if signature != stack_signature:
 		stack_signature = signature
 		var carried = player.basket.get_node("Carried")
-		world.clear_children(carried)
-		for i in mini(Economy.data.raw.size(), 11):
-			var species = int(Economy.data.raw[i].species)
-			var fish = world.model(world.FISH + Economy.SPECIES[species] + ".fbx", carried, Vector3(0, 0.4 + i * 0.17, 0), 0.10, PI * 0.5)
-			if not Economy.data.settings.reduced_motion:
-				fish.scale = Vector3.ONE * 0.65
-				create_tween().tween_property(fish, "scale", Vector3.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-		for i in mini(5, Economy.data.goods.size()):
-			world.model(world.PROPS + "Package_1.fbx", carried, Vector3(0.32, i * 0.13, 0), 0.85)
+		world.sync_carried(carried,Economy.data.raw,Economy.data.goods)
+	var count_label: Label3D = player.basket.get_node("Count")
+	count_label.visible = not Economy.data.raw.is_empty() or not Economy.data.goods.is_empty()
+	if not Economy.data.raw.is_empty() and not Economy.data.goods.is_empty(): count_label.text = "%d FISH · %d PKG" % [Economy.data.raw.size(), Economy.data.goods.size()]
+	elif not Economy.data.raw.is_empty(): count_label.text = "%d / %d" % [Economy.data.raw.size(), Economy.capacity()]
+	else: count_label.text = "%d %s" % [Economy.data.goods.size(),"PACKAGE" if Economy.data.goods.size()==1 else "PACKAGES"]
+	count_label.position = Vector3(-0.23,1.03,0.42)
+	count_label.no_depth_test = true
+	hud.board.sync_inventory()
 	if int(player.rod.get_meta("level", -1)) != int(Economy.data.rod): create_rod()
 
 func walkable(pos: Vector3) -> bool:
-	if absf(pos.x) > 11.9 or pos.z > 13.6: return false
-	if pos.z >= -1.75: return true
-	if pos.z < -7.9: return false
-	if absf(pos.x + 5) < 1.06: return true
-	return bool(Economy.data.dock) and absf(pos.x - 5) < 1.06
+	if pos.x < -11.9 or pos.x > 52.9 or pos.z > 43.9:return false
+	if pos.z>=-1.75:return true
+	for dock in 4:
+		if Economy.dock_owned(dock) and absf(pos.x-[-5.0,5.0,15.5,26.0][dock])<=1.06 and pos.z>=-7.9:return true
+	return false
 
 func _process(delta: float) -> void:
 	if not initialized: return
+	if Input.is_action_just_pressed("debug_toggle") and OS.is_debug_build():
+		if hud.modal_kind == "debug": hud.close_modal()
+		else: hud.show_debug()
 	if Input.is_action_just_pressed("menu"):
 		if hud.modal_open: hud.close_modal()
 		else: hud.show_settings()
 	if focus_paused: return
 	if Input.is_action_just_pressed("interact") and not hud.modal_open: interact()
-	var follow = player.position + Vector3(0, 8.5, 8.5)
-	camera.position = camera.position.lerp(follow, 1.0 - exp(-delta * 5.5))
-	camera.look_at(camera.position - Vector3(0, 8.5, 10))
+	if camera_mode == "follow":
+		var target = follow_pose()
+		camera.position = camera.position.lerp(target.origin, 1.0 - exp(-delta * 5.5))
+		camera.rotation = target.basis.get_euler()
 	find_station()
 	if not hud.modal_open:
 		update_stations(delta)
 		update_fishing(delta)
-	update_business(delta)
-	world.update_customers(delta)
+	if not debug_pause_business:
+		update_business(delta)
 	for i in world.displays.size():
 		if world.displays[i].visible and not Economy.data.settings.reduced_motion:
 			world.displays[i].rotation.y += delta * 0.4
+	world.update_zone_feedback(nearest_station if not hud.modal_open else "", dwell_time)
 	update_context()
 	update_guidance()
+	hud.update_station_badges()
+
+func follow_pose() -> Transform3D:
+	return Transform3D(Basis.from_euler(Vector3(-atan2(7.6, 8.5), 0, 0)), player.global_position + Vector3(0, 8.5, 8.5))
+
+func focus_workbench() -> void:
+	if camera_tween != null: camera_tween.kill()
+	camera_mode = "board"
+	camera_transition = true
+	player.basket.hide()
+	player.velocity = Vector3.ZERO
+	var view: Camera3D = world.get_node("MergeGarden/Workbench/Camera")
+	var duration = 0.12 if Economy.data.settings.reduced_motion else 0.75
+	camera_tween = create_tween().set_parallel(true)
+	camera_tween.tween_property(camera, "global_transform", view.global_transform.orthonormalized(), duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	camera_tween.tween_property(camera, "fov", view.fov, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	camera_tween.chain().tween_callback(func():
+		camera_transition = false
+		hud.board.set_transitioning(false)
+		camera_settled.emit())
+
+func focus_cutter() -> void:
+	if camera_tween != null: camera_tween.kill()
+	camera_mode = "cutter"
+	camera_transition = true
+	player.basket.hide()
+	player.velocity = Vector3.ZERO
+	cutter_slot = int(world.pads[nearest_station].machine_slot)
+	world.machine_factory(cutter_slot).status.hide()
+	var view: Camera3D = world.machine_factory(cutter_slot).get_node("Camera")
+	var duration = 0.12 if Economy.data.settings.reduced_motion else 0.6
+	camera_tween = create_tween().set_parallel(true)
+	camera_tween.tween_property(camera,"global_transform",view.global_transform.orthonormalized(),duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	camera_tween.tween_property(camera,"fov",view.fov,duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	camera_tween.chain().tween_callback(func(): camera_transition=false; camera_settled.emit())
+
+func return_from_workbench() -> void:
+	for slot in world.machines:world.machine_factory(slot).status.show()
+	if camera_tween != null: camera_tween.kill()
+	camera_mode = "returning"
+	camera_transition = true
+	var duration = 0.12 if Economy.data.settings.reduced_motion else 0.65
+	camera_tween = create_tween().set_parallel(true)
+	camera_tween.tween_property(camera, "global_transform", follow_pose(), duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	camera_tween.tween_property(camera, "fov", 50.0, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	camera_tween.chain().tween_callback(func():
+		camera_mode = "follow"
+		camera_transition = false
+		player.basket.show()
+		hud.finish_close_modal()
+		camera_settled.emit())
 
 func find_station() -> void:
 	nearest_station = ""
 	var closest = 100.0
 	for id in world.pads:
 		var p: Dictionary = world.pads[id]
-		if not p.node.visible: continue
+		if not p.node.is_visible_in_tree(): continue
 		var a = Vector2(player.position.x, player.position.z)
 		var b = Vector2(p.position.x, p.position.z)
 		var distance = a.distance_to(b)
-		if distance < float(p.radius) + 0.16 and distance < closest:
+		var local_point: Vector3 = p.node.to_local(player.global_position)
+		var on_zone: bool = absf(local_point.x) <= p.size.x * 0.5 and absf(local_point.z) <= p.size.y * 0.5 if p.size != Vector2.ZERO else distance < float(p.radius) + 0.16
+		if on_zone and distance < closest:
 			nearest_station = id
 			closest = distance
 	if nearest_station != last_station:
 		dwell_time = 0
-		station_time = 0.4
+		station_time = 0.08
 		last_station = nearest_station
 
 func update_stations(delta: float) -> void:
 	station_time += delta
 	hud.dwell.visible = false
-	if nearest_station in ["rod", "bag", "machine", "worker", "dock"]:
+	if world.is_purchase_pad(nearest_station):
 		var cost = Economy.upgrade_cost(nearest_station)
 		if cost >= 0 and int(Economy.data.coins) >= cost and dwell_time >= 0:
 			dwell_time += delta
 			hud.dwell.visible = true
-			hud.dwell.value = dwell_time / 1.2
-			if dwell_time >= 1.2:
-				var kind = nearest_station
-				if Economy.purchase(kind):
+			hud.dwell.value = dwell_time / 0.9
+			if dwell_time >= 0.9:
+				var purchase_id = nearest_station
+				if Economy.purchase(purchase_id):
 					audio.cue("upgrade")
-					world.ripple(world.pads[kind].position + Vector3(0, 0.1, 0), Color("ffe087"))
-					world.burst(world.pads[kind].position + Vector3.UP * 0.5, Color("ffe087"), 20)
-					world.floating_text("UPGRADED!", world.pads[kind].position + Vector3.UP, Color("ffe087"))
-					hud.toast(upgrade_description(kind))
+					world.purchase_coins(purchase_id,cost)
+					camera_impact(0.020)
+					world.ripple(world.pads[purchase_id].position + Vector3(0, 0.1, 0), Color("ffe087"))
+					world.burst(world.pads[purchase_id].position + Vector3.UP * 0.5, Color("ffe087"), 20)
+					world.floating_text("UPGRADED!", world.pads[purchase_id].position + Vector3.UP, Color("ffe087"))
+					hud.toast(upgrade_description(purchase_id))
 				dwell_time = -1000 # Must step off before a second purchase.
 		return
-	if station_time < 0.42: return
-	station_time = 0
-	match nearest_station:
+	if station_time < 0.08: return
+	station_time -= 0.08
+	var kind=world.pad_kind(nearest_station)
+	var slot=int(world.pads[nearest_station].machine_slot) if world.pads.has(nearest_station) else 0
+	var fisher=int(world.pads[nearest_station].fisher_slot) if world.pads.has(nearest_station) else 0
+	match kind:
 		"cut":
-			var fish = Economy.feed_machine()
-			if not fish.is_empty():
-				world.arc_asset(world.FISH + Economy.SPECIES[int(fish.species)] + ".fbx", player.position + Vector3(0, 1.5, 0), Vector3(-1, 1.62, 2.3), 0.1)
-				audio.cue("click")
+			var fishes=Economy.transfer_school("feed",slot)
+			for fish in fishes:world.arc_asset(world.FISH+Economy.SPECIES[int(fish.species)]+".fbx",player.position+Vector3.UP*1.5,world.to_local(world.machine_input(slot).global_position)+Vector3.UP*0.2,1.0)
+			if not fishes.is_empty():audio.cue("transfer")
 		"out":
-			if Economy.take_output():
-				world.arc_asset(world.PROPS + "Package_1.fbx", Vector3(1.7, 0.9, 2.8), player.position + Vector3(0, 1.2, 0), 1.0)
-				audio.cue("click")
+			var before=Economy.data.goods.size()
+			var packages=Economy.transfer_school("output",slot)
+			for i in packages.size():world.fly_to_back("Goods",world.machine_output(slot).global_position+Vector3.UP*0.22,Economy.package_species(packages[i]),before+i,i*0.03)
+			if not packages.is_empty():audio.cue("transfer")
 		"stock":
-			if Economy.stock_stall():
-				world.arc_asset(world.PROPS + "Package_1.fbx", player.position + Vector3(0, 1.3, 0), Vector3(6.5, 1.0, 2.6), 1.0)
-				audio.cue("click")
+			var packages=Economy.transfer_school("stock")
+			for package in packages:world.arc_asset(world.PROPS+"Package_1.fbx",player.position+Vector3.UP*1.3,world.to_local(world.market_stock(int(world.pads[nearest_station].market_slot)).global_position)+Vector3.UP*0.15,1.0,Economy.package_species(package))
+			if not packages.is_empty():audio.cue("transfer")
 		"cash":
-			var value = Economy.collect()
-			if value > 0:
-				world.coin_cascade(Vector3(8.15, 0.3, 4.4), player.position)
-				hud.cash_sweep(camera.unproject_position(Vector3(8.15, 0.6, 4.4)))
-				world.floating_text("+%d coins" % value, player.position + Vector3(0, 2.1, 0), Color("ffe083"))
+			var value=Economy.collect()
+			if value>0:
+				hud.cash_sweep(camera.unproject_position(world.market_cash(int(world.pads[nearest_station].market_slot)).global_position+Vector3.UP*0.15))
 				audio.cue("coin")
 		"crate":
-			if Economy.take_worker():
-				audio.cue("click")
-				var fish: Dictionary = Economy.data.raw.back()
-				world.arc_asset(world.FISH + Economy.SPECIES[int(fish.species)] + ".fbx", Vector3(-8.6, 1, -0.1), player.position + Vector3(0, 1.2, 0), 0.1)
+			var before=Economy.data.raw.size()
+			var fishes=Economy.transfer_school("worker",fisher)
+			for i in fishes.size():world.fly_to_back("Raw",world.fisher_crate(fisher).global_position+Vector3.UP*0.15,int(fishes[i].species),before+i,i*0.04)
+			if not fishes.is_empty():audio.cue("transfer")
 
 func update_business(delta: float) -> void:
-	if not Economy.data.queue.is_empty() and Economy.data.output.size() <= 18:
-		if machine_time == 0: audio.cue("spin")
-		machine_time += delta
-		if not Economy.data.settings.reduced_motion:
-			world.saw.position.y = 0.78 + sin(machine_time * 28) * 0.015
-			if is_instance_valid(world.saw_blade): world.saw_blade.position.y = sin(machine_time * 24) * 0.09
-		if machine_time >= 1.5 / (1.0 + int(Economy.data.machine) * 0.30 + Economy.bonus("machine")):
-			machine_time = 0
-			var fish = Economy.process_fish()
-			if not fish.is_empty():
-				audio.cue("batch" if Economy.data.queue.is_empty() else "cut")
-				world.arc_asset(world.PROPS + "Package_1.fbx", Vector3(-1, 1.62, 2.3), Vector3(1.7, 0.9, 2.8), 1.0)
-	else:
-		machine_time = 0
-		world.saw.position.y = 0.78
-		if is_instance_valid(world.saw_blade): world.saw_blade.position.y = 0
-	if Economy.data.worker:
-		worker_time += delta
-		if worker_time >= 10:
-			worker_time = 0
-			var worker_species = 0 if randf() < 0.8 else 1
-			if Economy.worker_catch(worker_species):
-				world.arc_asset(world.FISH + Economy.SPECIES[worker_species] + ".fbx", Vector3(-5.8, -0.2, -5.5), Vector3(-8.6, 1, -0.1), 0.1)
-				world.ripple(Vector3(-5.8, -0.2, -5.5))
-	if world.ready_customer() and not Economy.data.stock.is_empty():
-		sale_time += delta
-		if sale_time >= 2.3:
-			sale_time = 0
-			var value = Economy.sell()
-			if value > 0:
-				world.serve_customer(value)
-				world.arc_asset(world.PROPS + "Package_1.fbx", Vector3(6.5, 1, 2.6), Vector3(9.4, 1, 2.6), 1.0)
-				audio.cue("coin")
-	else: sale_time = 0
+	for slot in Economy.MACHINE_COUNT:
+		if not Economy.machine_owned(slot):continue
+		var queue=Economy.queue_for(slot)
+		var timer=machine_time if slot==0 else float(extra_machine_times[slot-1])
+		if queue.is_empty() or Economy.output_for(slot).size()>Economy.OUTPUT_CAP-Economy.PORTIONS:
+			if world.machine_factory(slot).active:world.cancel_cut_visual(slot)
+			timer=0
+		else:
+			var duration=0.95/(1.0+int(Economy.data.machine)*0.25+Economy.bonus("machine"))
+			if not world.machine_factory(slot).active:
+				world.begin_cut_visual(queue[0],duration,slot)
+				audio.cue("spin")
+			timer+=delta
+			world.advance_cut_visual(timer/duration,slot)
+			if timer>=duration:
+				timer-=duration
+				var fish=Economy.process_fish(slot)
+				if not fish.is_empty():world.finish_cut_visual(fish,slot);audio.cue("batch")
+		if slot==0:machine_time=timer
+		else:extra_machine_times[slot-1]=timer
+	sale_time+=delta
+	if sale_time>=0.35:
+		sale_time-=0.35
+		# Nine matching customers can each buy one portion per sales beat.
+		for customer in world.customers.duplicate():
+			if customer.state!="waiting":continue
+			var before=Economy.data.stock.size()
+			var value=Economy.sell(int(customer.species))
+			if Economy.data.stock.size()<before:
+				world.arc_asset(world.PROPS+"Package_1.fbx",world.to_local(world.market_stock(floori(float(customer.slot)/3)).global_position)+Vector3.UP*0.15,world.to_local(customer.person.global_position)+Vector3.UP,1.0,int(customer.species))
+				world.serve_customer(value,customer)
+				audio.cue("sale")
+	for fisher in Economy.FISHER_COUNT:
+		if not Economy.fisher_hired(fisher) or not Economy.dock_owned(Economy.fisher_dock(fisher)):
+			if fisher==0:worker_time=0
+			else:extra_worker_times[fisher-1]=0.0
+			continue
+		var timer=worker_time if fisher==0 else float(extra_worker_times[fisher-1])
+		timer+=delta
+		if timer>=4:
+			timer-=4
+			var species=fisher%4 if fisher>0 else (1 if randf()<0.24 else 0)
+			var before=Economy.crate_for(fisher).size()
+			if Economy.worker_catch(species,Economy.CATCH_BATCH,fisher):
+				var person:Node3D=world.worker if fisher==0 else world.fishers[fisher].get_node("Worker")
+				var source=world.to_local(person.global_position)+Vector3(0,-0.15,-1.7)
+				var destination=world.to_local(world.fisher_crate(fisher).global_position)+Vector3.UP*0.3
+				for i in Economy.crate_for(fisher).size()-before:world.arc_asset(world.FISH+Economy.SPECIES[species]+".fbx",source+Vector3((i-2)*0.14,0,0),destination,1.0)
+				world.ripple(destination,Color("7de4c5"))
+		if fisher==0:worker_time=timer
+		else:extra_worker_times[fisher-1]=timer
+
+func camera_impact(strength: float) -> void:
+	if Economy.data.settings.reduced_motion or camera_transition: return
+	if impact_tween != null: impact_tween.kill()
+	camera.h_offset = strength
+	camera.v_offset = -strength*0.5
+	impact_tween = create_tween().set_parallel(true)
+	impact_tween.tween_property(camera,"h_offset",0.0,0.18).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	impact_tween.tween_property(camera,"v_offset",0.0,0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 func interact() -> void:
 	if hud.modal_open or focus_paused: return
@@ -255,16 +314,17 @@ func interact() -> void:
 		return
 	if fishing_state != "idle": return
 	match nearest_station:
-		"fish", "fish2": start_fishing()
+		"fish", "fish2", "fish3", "fish4": start_fishing()
 		"merge": hud.show_collection()
-		"rod", "bag", "machine", "worker", "dock":
+		"cut", "cut2", "cut3": hud.show_cutter()
+		"rod", "bag", "machine", "worker", "dock", "machine2", "machine3", "worker2", "worker3", "worker4", "dock2", "dock3":
 			if int(Economy.data.coins) < Economy.upgrade_cost(nearest_station): hud.toast("Earn and collect more coins first")
 
 func start_fishing() -> void:
 	if Economy.data.raw.size() >= Economy.capacity():
 		hud.toast("Basket full — deliver to CUT or MERGE")
 		return
-	var rare = nearest_station == "fish2"
+	var rare = nearest_station in ["fish2","fish3","fish4"]
 	var roll = randf()
 	fishing_species = 0
 	if int(Economy.data.tutorial) > 0:
@@ -272,6 +332,8 @@ func start_fishing() -> void:
 			fishing_species = 1 if roll < 0.55 else (2 if roll < 0.93 else 3)
 		elif roll > 0.83:
 			fishing_species = 1
+	if nearest_station == "fish3": fishing_species = 2 if randf()<0.7 else 1
+	if nearest_station == "fish4": fishing_species = 3 if randf()<0.7 else 2
 	fishing_state = "casting"
 	fishing_time = 0
 	landing = 0
@@ -282,9 +344,9 @@ func start_fishing() -> void:
 	player.velocity = Vector3.ZERO
 	player.visual.rotation.y = PI
 	player.rod.visible = true
-	bobber_position = Vector3(-5 if not rare else 5, -0.17, -10.15)
-	bobber = world.model(world.FISH + "Lure_1.fbx", world, player.position + Vector3(0, 1.2, 0), 0.18)
-	hooked_fish = world.model(world.FISH + Economy.SPECIES[fishing_species] + ".fbx", world, bobber_position + Vector3(0, -0.6, 0), 0.16, PI)
+	bobber_position = Vector3(world.pads[nearest_station].position.x, -0.17, -10.15)
+	bobber = world.model(world.FISH + "Lure_1.fbx", world, player.position + Vector3(0, 0.9, 0), 0.18)
+	hooked_fish = world.normalized_model(world.FISH + Economy.SPECIES[fishing_species] + ".fbx", world, bobber_position + Vector3(0, -0.6, 0), world.FISH_LENGTH, PI)
 	hooked_fish.visible = false
 	audio.cue("cast")
 
@@ -293,8 +355,8 @@ func update_fishing(delta: float) -> void:
 	fishing_time += delta
 	var warning = false
 	if fishing_state == "casting":
-		var t = clampf(fishing_time / 0.65, 0, 1)
-		bobber.position = (player.position + Vector3(0, 1.2, 0)).lerp(bobber_position, t) + Vector3.UP * sin(t * PI) * 2
+		var t = clampf(fishing_time / 0.40, 0, 1)
+		bobber.position = (player.position + Vector3(0, 0.9, 0)).lerp(bobber_position, t) + Vector3.UP * sin(t * PI) * 2
 		player.rod.rotation_degrees.x = -35 - sin(t * PI) * 20
 		if t >= 1:
 			fishing_state = "waiting"
@@ -302,7 +364,7 @@ func update_fishing(delta: float) -> void:
 			world.ripple(bobber_position)
 	elif fishing_state == "waiting":
 		bobber.position.y = bobber_position.y + sin(fishing_time * 4) * 0.055
-		if fishing_time >= 1.4:
+		if fishing_time >= 0.70:
 			fishing_state = "reeling"
 			fishing_time = 0
 			audio.cue("bite")
@@ -327,12 +389,12 @@ func update_fishing(delta: float) -> void:
 		var control = 1.0 - int(Economy.data.rod) * 0.085 - Economy.bonus("control")
 		var assisted = bool(Economy.data.settings.assist) or int(Economy.data.tutorial) == 0
 		if reeling:
-			landing += delta * (0.205 + int(Economy.data.rod) * 0.012)
+			landing += delta * (0.45 + int(Economy.data.rod) * 0.024)
 			strain += delta * (0.135 if assisted else 0.255) * control * resistance
 			reel_click_time += delta
 			if reel_click_time > 0.22:
 				reel_click_time = 0
-				audio.cue("click")
+				audio.cue("transfer")
 		else:
 			strain -= delta * 0.48
 			landing -= delta * 0.028
@@ -374,13 +436,17 @@ func land_fish() -> void:
 	var species = fishing_species
 	var start = bobber_position
 	var discovered = bool(Economy.data.discoveries[species])
+	var before = Economy.data.raw.size()
 	if Economy.catch_fish(species):
-		world.arc_asset(world.FISH + Economy.SPECIES[species] + ".fbx", start, player.position + Vector3(0, 1.5, 0), 0.13)
+		var quantity = Economy.data.raw.size()-before
+		for i in quantity:
+			world.fly_to_back("Raw",world.to_global(start+Vector3((i-2)*0.16,0,i*0.08)),species,before+i,i*0.045)
+		camera_impact(0.028)
 		world.ripple(start)
 		world.burst(start, Color("c2fff4"), 24 if species > 1 else 14)
-		world.floating_text("%s!" % Economy.SPECIES[species], player.position + Vector3(0, 2.3, 0), Color("ffe292"))
+		world.floating_text("+%d %s!" % [quantity,Economy.SPECIES[species]], player.position + Vector3(0, 2.3, 0), Color("ffe292"))
 		audio.cue("catch")
-		hud.toast(("NEW DISCOVERY! " if not discovered else "") + "%s • %s • %d coins" % [Economy.SPECIES[species], Economy.RARITIES[species], Economy.VALUES[species]])
+		hud.toast(("NEW DISCOVERY! " if not discovered else "") + "+%d %s • %s • %d total value" % [quantity,Economy.SPECIES[species],Economy.RARITIES[species],Economy.VALUES[species]*quantity])
 	cancel_fishing()
 
 func cancel_fishing() -> void:
@@ -399,6 +465,9 @@ func upgrade_description(kind: String) -> String:
 		"machine": return "Faster cutting! Watch packages pop out sooner."
 		"worker": return "Fisher hired! Pick up catches from the shore crate."
 		"dock": return "New dock open! Clownfish, Puffer & Swordfish await."
+	if kind in ["machine2","machine3"]:return "New saw workshop! Feed fish here; collect its OUT pile."
+	if kind in ["dock2","dock3"]:return "New fishing port open! Follow the shore east."
+	if kind in ["worker2","worker3","worker4"]:return "Fisher hired! Five catches every four seconds."
 	return "Upgraded!"
 
 func merge_effect(species: int) -> void:
@@ -415,30 +484,32 @@ func update_context() -> void:
 	if fishing_state != "idle":
 		hud.context("Wait for the bite…", "CASTING…", false)
 		return
-	match nearest_station:
+	match world.pad_kind(nearest_station):
 		"fish", "fish2": hud.context("Basket full — deliver or merge" if Economy.data.raw.size() >= Economy.capacity() else "Cast, then hold to reel", "CAST  ·  SPACE", Economy.data.raw.size() < Economy.capacity())
 		"cut":
-			if Economy.data.output.size() >= 20:
-				hud.context("Collect OUT packages to make room", "OUTPUT BLOCKED", false)
-			elif Economy.data.queue.size() >= 10:
-				hud.context("Queue full — wait for cutting", "QUEUE FULL", false)
-			else:
-				hud.context("Uncheck Keep in Collection to cut" if Economy.processable_count() == 0 and not Economy.data.raw.is_empty() else "Fish transfer automatically", "CUTTING…" if Economy.processable_count() > 0 else ("FISH KEPT FOR MERGE" if not Economy.data.raw.is_empty() else "NEEDS FISH"), false)
-		"out": hud.context("Carry packages to STOCK", "PACKAGES FULL" if Economy.data.goods.size() >= Economy.goods_capacity() else ("PICKING UP…" if not Economy.data.output.is_empty() else "OUTPUT EMPTY"), false)
-		"stock": hud.context("Customers buy from the queue", "STALL FULL" if Economy.data.stock.size() >= 20 else ("STOCKING…" if not Economy.data.goods.is_empty() else "NEEDS PACKAGES"), false)
+			if not Economy.queue_for(int(world.pads[nearest_station].machine_slot)).is_empty() or world.machine_factory(int(world.pads[nearest_station].machine_slot)).active:
+				hud.context("10 slices · 5 colored packages. Tap to watch.","WATCH SAW",true)
+			elif Economy.processable_count()==0 and not Economy.data.raw.is_empty():
+				hud.context("Kept fish stay safe. Uncheck Keep to cut.","KEPT FISH",false)
+			else: hud.context("Stand here to feed your fish automatically.","NEEDS FISH",false)
+		"out": hud.context("Carry packages to STOCK", "PACKAGES FULL" if Economy.data.goods.size() >= Economy.goods_capacity() else ("PICKING UP…" if not Economy.output_for(int(world.pads[nearest_station].machine_slot)).is_empty() else "OUTPUT EMPTY"), false)
+		"stock": hud.context("Customers buy from the queue", "STALL FULL" if Economy.data.stock.size() >= Economy.STOCK_CAP else ("STOCKING…" if not Economy.data.goods.is_empty() else "NEEDS PACKAGES"), false)
 		"cash": hud.context("Sales leave cash here", "COLLECTING…" if int(Economy.data.cash) > 0 else "NO CASH YET", false)
 		"merge": hud.context("Matching fish → rare discovery", "MERGE & DISPLAY")
-		"crate": hud.context("Worker catches, not free cash", "PICKING UP…" if not Economy.data.worker_crate.is_empty() else "CRATE EMPTY", false)
-		"rod", "bag", "machine", "worker", "dock":
+		"crate": hud.context("Worker catches, not free cash", "PICKING UP…" if not Economy.crate_for(int(world.pads[nearest_station].fisher_slot)).is_empty() else "CRATE EMPTY", false)
+		"purchase", "rod", "bag", "machine", "worker", "dock":
 			var cost = Economy.upgrade_cost(nearest_station)
-			hud.context("Stay 1.2s to buy • leave to cancel" if cost >= 0 else "All done!", ("BUY  ·  %d COINS" % cost if int(Economy.data.coins) >= cost else "NEED %d COINS" % cost) if cost >= 0 else "COMPLETE", false)
+			hud.context(("Stand to buy · %d coins · leave to cancel" % cost if int(Economy.data.coins) >= cost else "Need %d more coins" % (cost - int(Economy.data.coins))) if cost >= 0 else "All done!", ("BUY  ·  %d COINS" % cost if int(Economy.data.coins) >= cost else "NEED %d COINS" % cost) if cost >= 0 else "COMPLETE", false)
 		_: hud.context("Walk onto a labeled station pad", "FIND A STATION", false)
 
 func apply_settings() -> void:
 	Engine.max_fps = 30 if Economy.data.settings.low_quality else 60
 	if is_instance_valid(world):
-		world.water_material.set_shader_parameter("motion_amount", 0.15 if Economy.data.settings.reduced_motion else 1.0)
+		world.water_material.set_shader_parameter("motion_amount", 0.0 if Economy.data.settings.reduced_motion else 1.0)
 		for sun in world.find_children("*", "DirectionalLight3D", true, false): sun.shadow_enabled = not Economy.data.settings.low_quality
+	if is_instance_valid(hud):
+		hud.board.sparks.amount = 16 if Economy.data.settings.low_quality else 42
+		get_viewport().msaa_3d = Viewport.MSAA_DISABLED if Economy.data.settings.low_quality else Viewport.MSAA_2X
 
 func _notification(what: int) -> void:
 	if not initialized: return
@@ -448,7 +519,8 @@ func _notification(what: int) -> void:
 		reel_toggled = false
 		hud.joystick.reset()
 		hud.touch_action_id = -1
-		Input.action_release("interact")
+		for action in ["move_left", "move_right", "move_up", "move_down", "interact"]:
+			Input.action_release(action)
 		Economy.save_game()
 	elif what == NOTIFICATION_APPLICATION_FOCUS_IN or what == NOTIFICATION_APPLICATION_RESUMED:
 		focus_paused = false
@@ -460,13 +532,16 @@ func update_guidance() -> void:
 	var target: String = targets[mini(6, int(Economy.data.tutorial))]
 	if int(Economy.data.tutorial) >= 5 and int(Economy.data.rod) == 0 and int(Economy.data.coins) < 30:
 		target = next_delivery_target()
-		hud.objective.text = "Earn %d more coins for a better rod" % (30 - int(Economy.data.coins))
+		hud.objective.text = "Earn %d more coins for your rod" % (30 - int(Economy.data.coins))
 	elif target == "merge" and Economy.data.raw.is_empty():
 		target = "crate" if Economy.data.worker and not Economy.data.worker_crate.is_empty() else "fish"
-		hud.objective.text = "Catch fish for merges & collection bonuses"
+		hud.objective.text = "Catch a matching pair"
 	elif target == "cut" and Economy.processable_count() == 0 and not Economy.data.raw.is_empty():
 		target = "merge"
-		hud.objective.text = "Your fish are kept safe • visit MERGE"
+		hud.objective.text = "Try the merge workbench"
+	if int(Economy.data.tutorial)>=6:target=next_delivery_target()
+	elif target=="cut":target=nearest_pad("cut")
+	elif target=="out":target=nearest_pad("out",true) if nearest_pad("out",true)!="" else "out"
 	var location: Vector3 = world.pads[target].position
 	var delta_pos = location - player.position
 	var distance = Vector2(delta_pos.x, delta_pos.z).length()
@@ -477,19 +552,33 @@ func update_guidance() -> void:
 	if absf(delta_pos.x) > absf(delta_pos.z): arrow = "→" if delta_pos.x > 0 else "←"
 	var destination = "CAST" if target == "fish" else ("FISHER CRATE" if target == "crate" else target.to_upper())
 	hud.guide.text = "%s %s · %d m" % [arrow, destination, int(ceil(distance))]
-	var screen = camera.unproject_position(location + Vector3(0, 0.6, 0))
 	var viewport_size = get_viewport().get_visible_rect().size
-	hud.guide.position = Vector2(clampf(screen.x - 85, 190, viewport_size.x - 410), clampf(screen.y - 40, 190, viewport_size.y - 170))
+	hud.guide.position = Vector2((viewport_size.x-hud.guide.size.x)*0.5,viewport_size.y-211)
+
+func nearest_pad(kind: String, available_only: bool = false) -> String:
+	var chosen=""
+	var distance=INF
+	for id in world.pads:
+		var pad:Dictionary=world.pads[id]
+		if String(pad.kind)!=kind or not pad.node.is_visible_in_tree():continue
+		if available_only and kind=="out" and Economy.output_for(int(pad.machine_slot)).is_empty():continue
+		if available_only and kind=="crate" and Economy.crate_for(int(pad.fisher_slot)).is_empty():continue
+		var d=player.position.distance_squared_to(pad.position)
+		if d<distance:chosen=id;distance=d
+	return chosen
 
 func next_delivery_target() -> String:
-	if int(Economy.data.cash) > 0: return "cash"
-	if not Economy.data.goods.is_empty(): return "stock"
-	if not Economy.data.output.is_empty() or not Economy.data.queue.is_empty(): return "out"
-	if Economy.processable_count() > 0: return "cut"
-	return "crate" if Economy.data.worker and not Economy.data.worker_crate.is_empty() else "fish"
+	if int(Economy.data.cash)>0:return "cash"
+	if not Economy.data.goods.is_empty():return "stock"
+	var output=nearest_pad("out",true)
+	if output!="":return output
+	if Economy.processable_count()>0:return nearest_pad("cut")
+	if not Economy.data.raw.is_empty():return "merge"
+	var crate=nearest_pad("crate",true)
+	return crate if crate!="" else "fish"
 
 func display_effect(species: int) -> void:
-	var position3d = Vector3(-9.7 + species * 1.2, 1.1, 3.8)
+	var position3d = Vector3(-9.7 + species * 0.9, 1.1, 3.8)
 	audio.cue("upgrade")
 	world.ripple(position3d, Color("bdfff0"))
 	world.burst(position3d, Color("bdfff0"), 16)

@@ -1,0 +1,545 @@
+[gd_scene format=3]
+[ext_resource type="PackedScene" path="res://scenes/stations/extra_machine1.tscn" id="Machine1"]
+[ext_resource type="PackedScene" path="res://scenes/stations/extra_machine2.tscn" id="Machine2"]
+[ext_resource type="PackedScene" path="res://scenes/stations/extra_fisher1.tscn" id="Fisher1"]
+[ext_resource type="PackedScene" path="res://scenes/stations/extra_fisher2.tscn" id="Fisher2"]
+[ext_resource type="PackedScene" path="res://scenes/stations/extra_fisher3.tscn" id="Fisher3"]
+[ext_resource type="PackedScene" path="res://scenes/stations/expansion_port.tscn" id="Port"]
+[ext_resource type="Shader" path="res://shaders/interaction_zone.gdshader" id="Zone"]
+[ext_resource type="Texture2D" path="res://ui/icons/build.svg" id="Build"]
+[ext_resource type="Texture2D" path="res://ui/icons/hook.svg" id="Hook"]
+[ext_resource type="PackedScene" path="res://assets/Ultimate Nature Pack - Jun 2019/FBX/Bush_1.fbx" id="Bush"]
+[ext_resource type="PackedScene" path="res://assets/Ultimate Nature Pack - Jun 2019/FBX/Flowers.fbx" id="Flowers"]
+[ext_resource type="PackedScene" path="res://scenes/stations/extra_machine3.tscn" id="V7_machine3"]
+[ext_resource type="PackedScene" path="res://scenes/stations/extra_machine4.tscn" id="V7_machine4"]
+[ext_resource type="PackedScene" path="res://scenes/stations/extra_fisher4.tscn" id="V7_fisher4"]
+[ext_resource type="PackedScene" path="res://scenes/stations/extra_fisher5.tscn" id="V7_fisher5"]
+[ext_resource type="PackedScene" path="res://scenes/stations/extra_fisher6.tscn" id="V7_fisher6"]
+[ext_resource type="PackedScene" path="res://scenes/stations/extra_market1.tscn" id="V7_market1"]
+[ext_resource type="PackedScene" path="res://scenes/stations/extra_market2.tscn" id="V7_market2"]
+[sub_resource type="StandardMaterial3D" id="Path"]
+albedo_color = Color(0.80,0.70,0.47,1)
+roughness = 0.96
+[sub_resource type="PlaneMesh" id="Road"]
+size = Vector2(48,2.4)
+[sub_resource type="PlaneMesh" id="PurchaseSurface"]
+size = Vector2(2.4,2.0)
+[sub_resource type="PlaneMesh" id="CastSurface"]
+size = Vector2(1.8,1.7)
+[sub_resource type="ShaderMaterial" id="Mat_machine2"]
+resource_local_to_scene = true
+shader = ExtResource("Zone")
+shader_parameter/zone_size = Vector2(2.4,2.0)
+shader_parameter/accent = Color(1.0,0.76,0.30,1)
+shader_parameter/icon = ExtResource("Build")
+shader_parameter/purchase = true
+shader_parameter/active = 0.0
+shader_parameter/ready = 0.0
+shader_parameter/complete = 0.0
+shader_parameter/progress = -1.0
+[sub_resource type="ShaderMaterial" id="Mat_machine3"]
+resource_local_to_scene = true
+shader = ExtResource("Zone")
+shader_parameter/zone_size = Vector2(2.4,2.0)
+shader_parameter/accent = Color(1.0,0.76,0.30,1)
+shader_parameter/icon = ExtResource("Build")
+shader_parameter/purchase = true
+shader_parameter/active = 0.0
+shader_parameter/ready = 0.0
+shader_parameter/complete = 0.0
+shader_parameter/progress = -1.0
+[sub_resource type="ShaderMaterial" id="Mat_dock2"]
+resource_local_to_scene = true
+shader = ExtResource("Zone")
+shader_parameter/zone_size = Vector2(2.4,2.0)
+shader_parameter/accent = Color(1.0,0.76,0.30,1)
+shader_parameter/icon = ExtResource("Build")
+shader_parameter/purchase = true
+shader_parameter/active = 0.0
+shader_parameter/ready = 0.0
+shader_parameter/complete = 0.0
+shader_parameter/progress = -1.0
+[sub_resource type="ShaderMaterial" id="Mat_dock3"]
+resource_local_to_scene = true
+shader = ExtResource("Zone")
+shader_parameter/zone_size = Vector2(2.4,2.0)
+shader_parameter/accent = Color(1.0,0.76,0.30,1)
+shader_parameter/icon = ExtResource("Build")
+shader_parameter/purchase = true
+shader_parameter/active = 0.0
+shader_parameter/ready = 0.0
+shader_parameter/complete = 0.0
+shader_parameter/progress = -1.0
+[sub_resource type="ShaderMaterial" id="Mat_worker2"]
+resource_local_to_scene = true
+shader = ExtResource("Zone")
+shader_parameter/zone_size = Vector2(2.4,2.0)
+shader_parameter/accent = Color(1.0,0.76,0.30,1)
+shader_parameter/icon = ExtResource("Build")
+shader_parameter/purchase = true
+shader_parameter/active = 0.0
+shader_parameter/ready = 0.0
+shader_parameter/complete = 0.0
+shader_parameter/progress = -1.0
+[sub_resource type="ShaderMaterial" id="Mat_worker3"]
+resource_local_to_scene = true
+shader = ExtResource("Zone")
+shader_parameter/zone_size = Vector2(2.4,2.0)
+shader_parameter/accent = Color(1.0,0.76,0.30,1)
+shader_parameter/icon = ExtResource("Build")
+shader_parameter/purchase = true
+shader_parameter/active = 0.0
+shader_parameter/ready = 0.0
+shader_parameter/complete = 0.0
+shader_parameter/progress = -1.0
+[sub_resource type="ShaderMaterial" id="Mat_worker4"]
+resource_local_to_scene = true
+shader = ExtResource("Zone")
+shader_parameter/zone_size = Vector2(2.4,2.0)
+shader_parameter/accent = Color(1.0,0.76,0.30,1)
+shader_parameter/icon = ExtResource("Build")
+shader_parameter/purchase = true
+shader_parameter/active = 0.0
+shader_parameter/ready = 0.0
+shader_parameter/complete = 0.0
+shader_parameter/progress = -1.0
+[sub_resource type="ShaderMaterial" id="Mat_fish3"]
+resource_local_to_scene = true
+shader = ExtResource("Zone")
+shader_parameter/zone_size = Vector2(1.8,1.7)
+shader_parameter/accent = Color(0.14,0.66,0.89,1)
+shader_parameter/icon = ExtResource("Hook")
+shader_parameter/purchase = false
+shader_parameter/active = 0.0
+shader_parameter/ready = 0.0
+shader_parameter/complete = 0.0
+shader_parameter/progress = -1.0
+[sub_resource type="ShaderMaterial" id="Mat_fish4"]
+resource_local_to_scene = true
+shader = ExtResource("Zone")
+shader_parameter/zone_size = Vector2(1.8,1.7)
+shader_parameter/accent = Color(0.14,0.66,0.89,1)
+shader_parameter/icon = ExtResource("Hook")
+shader_parameter/purchase = false
+shader_parameter/active = 0.0
+shader_parameter/ready = 0.0
+shader_parameter/complete = 0.0
+shader_parameter/progress = -1.0
+[sub_resource type="ShaderMaterial" id="Mat_machine4"]
+resource_local_to_scene = true
+shader = ExtResource("Zone")
+shader_parameter/purchase = 1.0
+shader_parameter/accent = Color(0.18,0.78,0.40,1)
+shader_parameter/progress = -1.0
+
+[sub_resource type="ShaderMaterial" id="Mat_machine5"]
+resource_local_to_scene = true
+shader = ExtResource("Zone")
+shader_parameter/purchase = 1.0
+shader_parameter/accent = Color(0.18,0.78,0.40,1)
+shader_parameter/progress = -1.0
+
+[sub_resource type="ShaderMaterial" id="Mat_worker5"]
+resource_local_to_scene = true
+shader = ExtResource("Zone")
+shader_parameter/purchase = 1.0
+shader_parameter/accent = Color(0.18,0.78,0.40,1)
+shader_parameter/progress = -1.0
+
+[sub_resource type="ShaderMaterial" id="Mat_worker6"]
+resource_local_to_scene = true
+shader = ExtResource("Zone")
+shader_parameter/purchase = 1.0
+shader_parameter/accent = Color(0.18,0.78,0.40,1)
+shader_parameter/progress = -1.0
+
+[sub_resource type="ShaderMaterial" id="Mat_worker7"]
+resource_local_to_scene = true
+shader = ExtResource("Zone")
+shader_parameter/purchase = 1.0
+shader_parameter/accent = Color(0.18,0.78,0.40,1)
+shader_parameter/progress = -1.0
+
+[node name="MarinaExpansion" type="Node3D"]
+[node name="Promenade" type="MeshInstance3D" parent="."]
+position = Vector3(26,0.006,9.2)
+mesh = SubResource("Road")
+material_override = SubResource("Path")
+cast_shadow = 0
+[node name="SawII" parent="." instance=ExtResource("Machine1")]
+position = Vector3(16.2,0,7.5)
+[node name="SawIII" parent="." instance=ExtResource("Machine2")]
+position = Vector3(25.5,0,14.5)
+[node name="FisherII" parent="." instance=ExtResource("Fisher1")]
+position = Vector3(10,0,0)
+[node name="FisherIII" parent="." instance=ExtResource("Fisher2")]
+position = Vector3(20.5,0,0)
+[node name="FisherIV" parent="." instance=ExtResource("Fisher3")]
+position = Vector3(31,0,0)
+[node name="PufferPort" parent="." instance=ExtResource("Port")]
+position = Vector3(15.5,-1.1,-5)
+metadata/dock_slot = 2
+[node name="SwordfishPort" parent="." instance=ExtResource("Port")]
+position = Vector3(26,-1.1,-5)
+metadata/dock_slot = 3
+[node name="Plots" type="Node3D" parent="."]
+[node name="Pad_machine2" type="Node3D" parent="Plots"]
+position = Vector3(15.2,0,14.5)
+metadata/pad_id = "machine2"
+metadata/pad_kind = "purchase"
+metadata/pad_title = "SAW II"
+[node name="Surface" type="MeshInstance3D" parent="Plots/Pad_machine2"]
+position = Vector3(0,0.025,0)
+mesh = SubResource("PurchaseSurface")
+material_override = SubResource("Mat_machine2")
+cast_shadow = 0
+[node name="Caption" type="Label3D" parent="Plots/Pad_machine2"]
+position = Vector3(0,0.042,0.50)
+rotation = Vector3(-1.5707963,0,0)
+font_size = 72
+pixel_size = 0.005
+modulate = Color(0.08,0.25,0.29,1)
+outline_modulate = Color(1,0.97,0.81,1)
+outline_size = 4
+text = "0 / 220"
+[node name="Pad_machine3" type="Node3D" parent="Plots"]
+position = Vector3(24.5,0,22.2)
+metadata/pad_id = "machine3"
+metadata/pad_kind = "purchase"
+metadata/pad_title = "SAW III"
+[node name="Surface" type="MeshInstance3D" parent="Plots/Pad_machine3"]
+position = Vector3(0,0.025,0)
+mesh = SubResource("PurchaseSurface")
+material_override = SubResource("Mat_machine3")
+cast_shadow = 0
+[node name="Caption" type="Label3D" parent="Plots/Pad_machine3"]
+position = Vector3(0,0.042,0.50)
+rotation = Vector3(-1.5707963,0,0)
+font_size = 72
+pixel_size = 0.005
+modulate = Color(0.08,0.25,0.29,1)
+outline_modulate = Color(1,0.97,0.81,1)
+outline_size = 4
+text = "0 / 480"
+[node name="Pad_dock2" type="Node3D" parent="Plots"]
+position = Vector3(16.9,0,6.6)
+metadata/pad_id = "dock2"
+metadata/pad_kind = "purchase"
+metadata/pad_title = "PUFFER PORT"
+[node name="Surface" type="MeshInstance3D" parent="Plots/Pad_dock2"]
+position = Vector3(0,0.025,0)
+mesh = SubResource("PurchaseSurface")
+material_override = SubResource("Mat_dock2")
+cast_shadow = 0
+[node name="Caption" type="Label3D" parent="Plots/Pad_dock2"]
+position = Vector3(0,0.042,0.50)
+rotation = Vector3(-1.5707963,0,0)
+font_size = 72
+pixel_size = 0.005
+modulate = Color(0.08,0.25,0.29,1)
+outline_modulate = Color(1,0.97,0.81,1)
+outline_size = 4
+text = "0 / 240"
+[node name="Pad_dock3" type="Node3D" parent="Plots"]
+position = Vector3(27.8,0,6.6)
+metadata/pad_id = "dock3"
+metadata/pad_kind = "purchase"
+metadata/pad_title = "SWORDFISH PORT"
+[node name="Surface" type="MeshInstance3D" parent="Plots/Pad_dock3"]
+position = Vector3(0,0.025,0)
+mesh = SubResource("PurchaseSurface")
+material_override = SubResource("Mat_dock3")
+cast_shadow = 0
+[node name="Caption" type="Label3D" parent="Plots/Pad_dock3"]
+position = Vector3(0,0.042,0.50)
+rotation = Vector3(-1.5707963,0,0)
+font_size = 72
+pixel_size = 0.005
+modulate = Color(0.08,0.25,0.29,1)
+outline_modulate = Color(1,0.97,0.81,1)
+outline_size = 4
+text = "0 / 480"
+[node name="Pad_worker2" type="Node3D" parent="Plots"]
+position = Vector3(3.3,0,1.7)
+metadata/pad_id = "worker2"
+metadata/pad_kind = "purchase"
+metadata/pad_title = "HIRE FISHER II"
+metadata/dock_slot = 1
+[node name="Surface" type="MeshInstance3D" parent="Plots/Pad_worker2"]
+position = Vector3(0,0.025,0)
+mesh = SubResource("PurchaseSurface")
+material_override = SubResource("Mat_worker2")
+cast_shadow = 0
+[node name="Caption" type="Label3D" parent="Plots/Pad_worker2"]
+position = Vector3(0,0.042,0.50)
+rotation = Vector3(-1.5707963,0,0)
+font_size = 72
+pixel_size = 0.005
+modulate = Color(0.08,0.25,0.29,1)
+outline_modulate = Color(1,0.97,0.81,1)
+outline_size = 4
+text = "0 / 180"
+[node name="Pad_worker3" type="Node3D" parent="Plots"]
+position = Vector3(13.8,0,2.9)
+metadata/pad_id = "worker3"
+metadata/pad_kind = "purchase"
+metadata/pad_title = "HIRE FISHER III"
+metadata/dock_slot = 2
+[node name="Surface" type="MeshInstance3D" parent="Plots/Pad_worker3"]
+position = Vector3(0,0.025,0)
+mesh = SubResource("PurchaseSurface")
+material_override = SubResource("Mat_worker3")
+cast_shadow = 0
+[node name="Caption" type="Label3D" parent="Plots/Pad_worker3"]
+position = Vector3(0,0.042,0.50)
+rotation = Vector3(-1.5707963,0,0)
+font_size = 72
+pixel_size = 0.005
+modulate = Color(0.08,0.25,0.29,1)
+outline_modulate = Color(1,0.97,0.81,1)
+outline_size = 4
+text = "0 / 360"
+[node name="Pad_worker4" type="Node3D" parent="Plots"]
+position = Vector3(24.7,0,2.9)
+metadata/pad_id = "worker4"
+metadata/pad_kind = "purchase"
+metadata/pad_title = "HIRE FISHER IV"
+metadata/dock_slot = 3
+[node name="Surface" type="MeshInstance3D" parent="Plots/Pad_worker4"]
+position = Vector3(0,0.025,0)
+mesh = SubResource("PurchaseSurface")
+material_override = SubResource("Mat_worker4")
+cast_shadow = 0
+[node name="Caption" type="Label3D" parent="Plots/Pad_worker4"]
+position = Vector3(0,0.042,0.50)
+rotation = Vector3(-1.5707963,0,0)
+font_size = 72
+pixel_size = 0.005
+modulate = Color(0.08,0.25,0.29,1)
+outline_modulate = Color(1,0.97,0.81,1)
+outline_size = 4
+text = "0 / 600"
+[node name="Pad_fish3" type="Node3D" parent="Plots"]
+position = Vector3(15.5,0,-7.1)
+metadata/pad_id = "fish3"
+metadata/pad_kind = "fish"
+metadata/pad_title = "PUFFER PORT"
+metadata/dock_slot = 2
+[node name="Surface" type="MeshInstance3D" parent="Plots/Pad_fish3"]
+position = Vector3(0,0.025,0)
+mesh = SubResource("CastSurface")
+material_override = SubResource("Mat_fish3")
+cast_shadow = 0
+[node name="Caption" type="Label3D" parent="Plots/Pad_fish3"]
+position = Vector3(0,0.042,0.50)
+rotation = Vector3(-1.5707963,0,0)
+font_size = 72
+pixel_size = 0.005
+modulate = Color(0.08,0.25,0.29,1)
+outline_modulate = Color(1,0.97,0.81,1)
+outline_size = 4
+text = "CAST"
+[node name="Pad_fish4" type="Node3D" parent="Plots"]
+position = Vector3(26,0,-7.1)
+metadata/pad_id = "fish4"
+metadata/pad_kind = "fish"
+metadata/pad_title = "SWORDFISH PORT"
+metadata/dock_slot = 3
+[node name="Surface" type="MeshInstance3D" parent="Plots/Pad_fish4"]
+position = Vector3(0,0.025,0)
+mesh = SubResource("CastSurface")
+material_override = SubResource("Mat_fish4")
+cast_shadow = 0
+[node name="Caption" type="Label3D" parent="Plots/Pad_fish4"]
+position = Vector3(0,0.042,0.50)
+rotation = Vector3(-1.5707963,0,0)
+font_size = 72
+pixel_size = 0.005
+modulate = Color(0.08,0.25,0.29,1)
+outline_modulate = Color(1,0.97,0.81,1)
+outline_size = 4
+text = "CAST"
+[node name="Gardens" type="Node3D" parent="."]
+[node name="Bush0" parent="Gardens" instance=ExtResource("Bush")]
+position = Vector3(12.3,0,-0.6)
+scale = Vector3(0.82,0.82,0.82)
+[node name="Flowers0" parent="Gardens" instance=ExtResource("Flowers")]
+position = Vector3(13.15,0.02,-0.19999999999999996)
+scale = Vector3(0.68,0.68,0.68)
+[node name="Bush1" parent="Gardens" instance=ExtResource("Bush")]
+position = Vector3(19.6,0,-0.7)
+scale = Vector3(0.82,0.82,0.82)
+[node name="Flowers1" parent="Gardens" instance=ExtResource("Flowers")]
+position = Vector3(20.450000000000003,0.02,-0.29999999999999993)
+scale = Vector3(0.68,0.68,0.68)
+[node name="Bush2" parent="Gardens" instance=ExtResource("Bush")]
+position = Vector3(44.7,0,-0.6)
+scale = Vector3(0.82,0.82,0.82)
+[node name="Flowers2" parent="Gardens" instance=ExtResource("Flowers")]
+position = Vector3(45.55,0.02,-0.19999999999999996)
+scale = Vector3(0.68,0.68,0.68)
+[node name="Bush3" parent="Gardens" instance=ExtResource("Bush")]
+position = Vector3(45.6,0,5.8)
+scale = Vector3(0.82,0.82,0.82)
+[node name="Flowers3" parent="Gardens" instance=ExtResource("Flowers")]
+position = Vector3(46.45,0.02,6.2)
+scale = Vector3(0.68,0.68,0.68)
+[node name="Bush4" parent="Gardens" instance=ExtResource("Bush")]
+position = Vector3(45.5,0,11.2)
+scale = Vector3(0.82,0.82,0.82)
+[node name="Flowers4" parent="Gardens" instance=ExtResource("Flowers")]
+position = Vector3(46.35,0.02,11.6)
+scale = Vector3(0.68,0.68,0.68)
+[node name="Bush5" parent="Gardens" instance=ExtResource("Bush")]
+position = Vector3(43.7,0,17.7)
+scale = Vector3(0.82,0.82,0.82)
+[node name="Flowers5" parent="Gardens" instance=ExtResource("Flowers")]
+position = Vector3(44.55,0.02,18.099999999999998)
+scale = Vector3(0.68,0.68,0.68)
+[node name="Bush6" parent="Gardens" instance=ExtResource("Bush")]
+position = Vector3(27.8,0,27)
+scale = Vector3(0.82,0.82,0.82)
+[node name="Flowers6" parent="Gardens" instance=ExtResource("Flowers")]
+position = Vector3(41.650000000000006,0.02,27.4)
+scale = Vector3(0.68,0.68,0.68)
+[node name="Bush7" parent="Gardens" instance=ExtResource("Bush")]
+position = Vector3(22,0,28.5)
+scale = Vector3(0.82,0.82,0.82)
+[node name="Flowers7" parent="Gardens" instance=ExtResource("Flowers")]
+position = Vector3(22.85,0.02,28.9)
+scale = Vector3(0.68,0.68,0.68)
+[node name="Bush8" parent="Gardens" instance=ExtResource("Bush")]
+position = Vector3(15.1,0,24.3)
+scale = Vector3(0.82,0.82,0.82)
+[node name="Flowers8" parent="Gardens" instance=ExtResource("Flowers")]
+position = Vector3(15.95,0.02,24.7)
+scale = Vector3(0.68,0.68,0.68)
+[node name="Bush9" parent="Gardens" instance=ExtResource("Bush")]
+position = Vector3(7.4,0,25.4)
+scale = Vector3(0.82,0.82,0.82)
+[node name="Flowers9" parent="Gardens" instance=ExtResource("Flowers")]
+position = Vector3(8.25,0.02,25.799999999999997)
+scale = Vector3(0.68,0.68,0.68)
+
+[node name="Saw4" parent="." instance=ExtResource("V7_machine3")]
+position = Vector3(14.5,0,23)
+
+[node name="Saw5" parent="." instance=ExtResource("V7_machine4")]
+position = Vector3(24.5,0,30)
+
+[node name="Fisher5" parent="." instance=ExtResource("V7_fisher4")]
+position = Vector3(1.7,0,0)
+
+[node name="Fisher6" parent="." instance=ExtResource("V7_fisher5")]
+position = Vector3(11.7,0,0)
+
+[node name="Fisher7" parent="." instance=ExtResource("V7_fisher6")]
+position = Vector3(22.2,0,0)
+
+[node name="Market2" parent="." instance=ExtResource("V7_market1")]
+position = Vector3(22,0,0)
+
+[node name="Market3" parent="." instance=ExtResource("V7_market2")]
+position = Vector3(22,0,12)
+
+[node name="Pad_machine4" type="Node3D" parent="Plots"]
+position = Vector3(13.5,0,30.7)
+metadata/pad_id = "machine4"
+metadata/pad_kind = "purchase"
+metadata/pad_title = "SAW IV"
+[node name="Surface" type="MeshInstance3D" parent="Plots/Pad_machine4"]
+position = Vector3(0,0.025,0)
+mesh = SubResource("PurchaseSurface")
+material_override = SubResource("Mat_machine4")
+cast_shadow = 0
+[node name="Caption" type="Label3D" parent="Plots/Pad_machine4"]
+position = Vector3(0,0.042,0.50)
+rotation = Vector3(-1.5707963,0,0)
+pixel_size = 0.005
+font_size = 72
+outline_size = 0
+modulate = Color(0.06,0.24,0.18,1)
+text = "PRICE"
+
+[node name="Pad_machine5" type="Node3D" parent="Plots"]
+position = Vector3(23.5,0,37.7)
+metadata/pad_id = "machine5"
+metadata/pad_kind = "purchase"
+metadata/pad_title = "SAW V"
+[node name="Surface" type="MeshInstance3D" parent="Plots/Pad_machine5"]
+position = Vector3(0,0.025,0)
+mesh = SubResource("PurchaseSurface")
+material_override = SubResource("Mat_machine5")
+cast_shadow = 0
+[node name="Caption" type="Label3D" parent="Plots/Pad_machine5"]
+position = Vector3(0,0.042,0.50)
+rotation = Vector3(-1.5707963,0,0)
+pixel_size = 0.005
+font_size = 72
+outline_size = 0
+modulate = Color(0.06,0.24,0.18,1)
+text = "PRICE"
+
+[node name="Pad_worker5" type="Node3D" parent="Plots"]
+position = Vector3(-3.3,0,1.7)
+metadata/pad_id = "worker5"
+metadata/pad_kind = "purchase"
+metadata/pad_title = "HIRE FISHER V"
+[node name="Surface" type="MeshInstance3D" parent="Plots/Pad_worker5"]
+position = Vector3(0,0.025,0)
+mesh = SubResource("PurchaseSurface")
+material_override = SubResource("Mat_worker5")
+cast_shadow = 0
+[node name="Caption" type="Label3D" parent="Plots/Pad_worker5"]
+position = Vector3(0,0.042,0.50)
+rotation = Vector3(-1.5707963,0,0)
+pixel_size = 0.005
+font_size = 72
+outline_size = 0
+modulate = Color(0.06,0.24,0.18,1)
+text = "PRICE"
+
+[node name="Pad_worker6" type="Node3D" parent="Plots"]
+position = Vector3(6.7,0,1.7)
+metadata/pad_id = "worker6"
+metadata/pad_kind = "purchase"
+metadata/pad_title = "HIRE FISHER VI"
+[node name="Surface" type="MeshInstance3D" parent="Plots/Pad_worker6"]
+position = Vector3(0,0.025,0)
+mesh = SubResource("PurchaseSurface")
+material_override = SubResource("Mat_worker6")
+cast_shadow = 0
+[node name="Caption" type="Label3D" parent="Plots/Pad_worker6"]
+position = Vector3(0,0.042,0.50)
+rotation = Vector3(-1.5707963,0,0)
+pixel_size = 0.005
+font_size = 72
+outline_size = 0
+modulate = Color(0.06,0.24,0.18,1)
+text = "PRICE"
+
+[node name="Pad_worker7" type="Node3D" parent="Plots"]
+position = Vector3(17.2,0,2.9)
+metadata/pad_id = "worker7"
+metadata/pad_kind = "purchase"
+metadata/pad_title = "HIRE FISHER VII"
+[node name="Surface" type="MeshInstance3D" parent="Plots/Pad_worker7"]
+position = Vector3(0,0.025,0)
+mesh = SubResource("PurchaseSurface")
+material_override = SubResource("Mat_worker7")
+cast_shadow = 0
+[node name="Caption" type="Label3D" parent="Plots/Pad_worker7"]
+position = Vector3(0,0.042,0.50)
+rotation = Vector3(-1.5707963,0,0)
+pixel_size = 0.005
+font_size = 72
+outline_size = 0
+modulate = Color(0.06,0.24,0.18,1)
+text = "PRICE"
+
+[node name="MarketWalk" type="MeshInstance3D" parent="."]
+position = Vector3(35,0.006,13)
+rotation = Vector3(0,1.5707963,0)
+mesh = SubResource("Road")
+material_override = SubResource("Path")
+cast_shadow = 0

@@ -1,0 +1,200 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://bc0b4imie77u6" path="res://assets/Medieval Village Pack - Dec 2020/Props/FBX/MarketStand_1.fbx" id="1_fo33s"]
+[ext_resource type="PackedScene" uid="uid://c2xvm1o17i83v" path="res://assets/itHappy Characters GLB/Cliente 1.glb" id="2_fup1y"]
+[ext_resource type="PackedScene" uid="uid://daa0n8ecu3baw" path="res://assets/itHappy Characters GLB/Cliente 2.glb" id="3_o57xv"]
+[ext_resource type="PackedScene" uid="uid://rfpepxf5em0s" path="res://assets/itHappy Characters GLB/Cliente 3.glb" id="4_y8rp8"]
+
+[ext_resource type="Shader" path="res://shaders/interaction_zone.gdshader" id="V3_zone"]
+[ext_resource type="Texture2D" path="res://ui/icons/box.svg" id="V3_icon_box"]
+[ext_resource type="Texture2D" path="res://ui/icons/coin.svg" id="V3_icon_coin"]
+
+[ext_resource type="PackedScene" path="res://scenes/world/customer_request.tscn" id="V3_request"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l3bq3"]
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_hf5tk"]
+size = Vector3(2, 2.2, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_q0hyw"]
+size = Vector3(2, 2.2, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jqnwg"]
+albedo_color = Color(0.32941177, 0.8117647, 0.75686276, 1)
+roughness = 0.85
+emission_enabled = true
+emission = Color(0.04941177, 0.12176471, 0.11352942, 0.15)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pwvy3"]
+top_radius = 0.82
+bottom_radius = 0.82
+height = 0.035
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_05jsu"]
+albedo_color = Color(0.8352941, 0.9411765, 0.85490197, 1)
+roughness = 0.85
+
+[sub_resource type="TorusMesh" id="TorusMesh_g6vg6"]
+inner_radius = 0.755
+outer_radius = 0.855
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gmp4n"]
+albedo_color = Color(1, 0.8627451, 0.39607844, 1)
+roughness = 0.85
+emission_enabled = true
+emission = Color(0.15, 0.12941177, 0.059411768, 0.15)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_26s7p"]
+top_radius = 0.82
+bottom_radius = 0.82
+height = 0.035
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tbx0v"]
+albedo_color = Color(0.8352941, 0.9411765, 0.85490197, 1)
+roughness = 0.85
+
+[sub_resource type="TorusMesh" id="TorusMesh_v3htq"]
+inner_radius = 0.755
+outer_radius = 0.855
+
+[sub_resource type="PlaneMesh" id="V3_plane_stock"]
+size = Vector2(2.0, 1.8)
+
+[sub_resource type="ShaderMaterial" id="V3_material_stock"]
+resource_local_to_scene = true
+shader = ExtResource("V3_zone")
+shader_parameter/zone_size = Vector2(2.0, 1.8)
+shader_parameter/accent = Color(0.18, 0.72, 0.57, 1)
+shader_parameter/icon = ExtResource("V3_icon_box")
+shader_parameter/active = 0.0
+shader_parameter/ready = 0.0
+shader_parameter/complete = 0.0
+shader_parameter/progress = -1.0
+
+[sub_resource type="PlaneMesh" id="V3_plane_cash"]
+size = Vector2(2.0, 1.8)
+
+[sub_resource type="ShaderMaterial" id="V3_material_cash"]
+resource_local_to_scene = true
+shader = ExtResource("V3_zone")
+shader_parameter/zone_size = Vector2(2.0, 1.8)
+shader_parameter/accent = Color(0.95, 0.68, 0.22, 1)
+shader_parameter/icon = ExtResource("V3_icon_coin")
+shader_parameter/active = 0.0
+shader_parameter/ready = 0.0
+shader_parameter/complete = 0.0
+shader_parameter/progress = -1.0
+
+[node name="Market" type="Node3D"]
+metadata/market_slot = 2
+
+[node name="MarketStand_1" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 0, 2.6)
+
+[node name="MarketStand_1" parent="MarketStand_1" instance=ExtResource("1_fo33s")]
+transform = Transform3D(2.25, 0, 0, 0, 2.25, 0, 0, 0, 2.25, 0, 0, 0)
+
+[node name="Status" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.85, 2.6)
+pixel_size = 0.0045
+billboard = 1
+modulate = Color(0.08, 0.24, 0.28, 1)
+outline_modulate = Color(0.96, 1, 0.9, 1)
+text = "MARKET  0 / 20"
+font_size = 48
+outline_size = 6
+metadata/station_label = &"market2"
+
+[node name="SaleStock" type="Node3D" parent="."]
+position = Vector3(4.8,0.055,5.1)
+metadata/world_ref = "market2_sale_stack"
+
+[node name="CashPile" type="Node3D" parent="."]
+position = Vector3(7.8,0.055,5.6)
+metadata/world_ref = "market2_cash_pile"
+
+[node name="Customer0" type="Node3D" parent="."]
+position = Vector3(9.10,0,2.60)
+metadata/customer_slot = 6
+
+[node name="Cliente 1" parent="Customer0" instance=ExtResource("2_fup1y")]
+transform = Transform3D(0.98, 0, 0, 0, 0.98, 0, 0, 0, 0.98, 0, 0, 0)
+
+[node name="Customer1" type="Node3D" parent="."]
+position = Vector3(9.85,0,4.50)
+metadata/customer_slot = 7
+
+[node name="Cliente 2" parent="Customer1" instance=ExtResource("3_o57xv")]
+transform = Transform3D(0.98, 0, 0, 0, 0.98, 0, 0, 0, 0.98, 0, 0, 0)
+
+[node name="Customer2" type="Node3D" parent="."]
+position = Vector3(10.60,0,6.40)
+metadata/customer_slot = 8
+
+[node name="Cliente 3" parent="Customer2" instance=ExtResource("4_y8rp8")]
+transform = Transform3D(0.98, 0, 0, 0, 0.98, 0, 0, 0, 0.98, 0, 0, 0)
+
+[node name="MarketCollider" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 1.1, 2.6)
+visible = false
+material_override = SubResource("StandardMaterial3D_l3bq3")
+mesh = SubResource("BoxMesh_hf5tk")
+
+[node name="Solid_9881" type="StaticBody3D" parent="MarketCollider"]
+
+[node name="Shape_9880" type="CollisionShape3D" parent="MarketCollider/Solid_9881"]
+shape = SubResource("BoxShape3D_q0hyw")
+
+[node name="Pad_stock" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.8, 0, 5.1)
+metadata/pad_id = "stock3"
+metadata/pad_kind = "stock"
+metadata/market_slot = 2
+metadata/radius = 0.82
+
+[node name="Surface" type="MeshInstance3D" parent="Pad_stock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
+material_override = SubResource("V3_material_stock")
+mesh = SubResource("V3_plane_stock")
+cast_shadow = 0
+
+[node name="Caption" type="Label3D" parent="Pad_stock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28, 0.23)
+pixel_size = 0.0035
+billboard = 1
+modulate = Color(0.08, 0.24, 0.28, 1)
+outline_modulate = Color(0.96, 1, 0.9, 1)
+text = "4  STOCK"
+font_size = 46
+outline_size = 3
+
+[node name="Pad_cash" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 0, 5.6)
+metadata/pad_id = "cash3"
+metadata/pad_kind = "cash"
+metadata/market_slot = 2
+metadata/radius = 0.82
+
+[node name="Surface" type="MeshInstance3D" parent="Pad_cash"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
+material_override = SubResource("V3_material_cash")
+mesh = SubResource("V3_plane_cash")
+cast_shadow = 0
+
+[node name="Caption" type="Label3D" parent="Pad_cash"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28, 0.23)
+pixel_size = 0.0035
+billboard = 1
+modulate = Color(0.08, 0.24, 0.28, 1)
+outline_modulate = Color(0.96, 1, 0.9, 1)
+text = "5  CASH
+0 coins"
+font_size = 46
+outline_size = 3
+
+[node name="OrderBubble" parent="Customer0" instance=ExtResource("V3_request")]
+
+[node name="OrderBubble" parent="Customer1" instance=ExtResource("V3_request")]
+
+[node name="OrderBubble" parent="Customer2" instance=ExtResource("V3_request")]

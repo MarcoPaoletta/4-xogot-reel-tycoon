@@ -1,6 +1,35 @@
 [gd_scene format=3 uid="uid://byvrkf8fx1wco"]
 
 [ext_resource type="Script" uid="uid://d0ugwtg5bhhmw" path="res://scripts/main.gd" id="1_o5qli"]
+[ext_resource type="PackedScene" uid="uid://bl4uohxuxnjnd" path="res://scenes/world/lakeside.tscn" id="2_tbgi4"]
+[ext_resource type="PackedScene" uid="uid://c57xlg4d2362l" path="res://scenes/player/fisherman.tscn" id="3_tefeu"]
+[ext_resource type="PackedScene" uid="uid://d2sxj62aeg0dp" path="res://scenes/ui/hud.tscn" id="4_o6xl0"]
+[ext_resource type="Script" uid="uid://bmrcgjmvh8ond" path="res://scripts/audio.gd" id="5_tipki"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_85g3d"]
+shading_mode = 0
+albedo_color = Color(1, 0.96, 0.8, 1)
+
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_choun"]
 
 [node name="ReelTycoon" type="Node3D" unique_id=819524933]
 script = ExtResource("1_o5qli")
+
+[node name="Lakeside" parent="." unique_id=632024506 instance=ExtResource("2_tbgi4")]
+
+[node name="Fisherman" parent="." unique_id=1655402572 instance=ExtResource("3_tefeu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.05, -0.5)
+
+[node name="HUD" parent="." unique_id=205164149 instance=ExtResource("4_o6xl0")]
+
+[node name="FollowCamera" type="Camera3D" parent="." unique_id=712420203]
+transform = Transform3D(1, 0, 0, 0, 0.7454706450144521, 0.6665384590717454, 0, -0.6665384590717454, 0.7454706450144521, -5, 8.55, 8)
+current = true
+fov = 50.0
+
+[node name="Soundscape" type="Node" parent="." unique_id=950088427]
+script = ExtResource("5_tipki")
+
+[node name="FishingLine" type="MeshInstance3D" parent="." unique_id=1938221719]
+material_override = SubResource("StandardMaterial3D_85g3d")
+mesh = SubResource("ImmediateMesh_choun")

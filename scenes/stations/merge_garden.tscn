@@ -1,0 +1,202 @@
+[gd_scene format=3 uid="uid://8ybkhwhq5ag"]
+
+[ext_resource type="PackedScene" uid="uid://dtjf18h4rrse6" path="res://assets/Medieval Village Pack - Dec 2020/Props/FBX/Bench_1.fbx" id="1_rcs7x"]
+[ext_resource type="PackedScene" uid="uid://b48160ufifuak" path="res://assets/Medieval Village Pack - Dec 2020/Props/FBX/Barrel.fbx" id="2_pgimn"]
+[ext_resource type="PackedScene" uid="uid://bg7w3ng8wqghs" path="res://assets/Cute Fish Pack - Feb 2020/FBX/Goldfish.fbx" id="3_xxovq"]
+[ext_resource type="PackedScene" uid="uid://c5mptrrg488k7" path="res://assets/Cute Fish Pack - Feb 2020/FBX/Clownfish.fbx" id="4_sfr1k"]
+[ext_resource type="PackedScene" uid="uid://clpiyvhkj4gy8" path="res://assets/Cute Fish Pack - Feb 2020/FBX/Puffer.fbx" id="5_jf4e7"]
+[ext_resource type="PackedScene" uid="uid://h6en88vdsv3n" path="res://assets/Cute Fish Pack - Feb 2020/FBX/Swordfish.fbx" id="6_rvlhc"]
+
+[ext_resource type="Shader" path="res://shaders/interaction_zone.gdshader" id="V3_zone"]
+[ext_resource type="Texture2D" path="res://ui/icons/book.svg" id="V3_icon_book"]
+
+[ext_resource type="PackedScene" path="res://scenes/world/merge_workbench.tscn" id="V4_workbench"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e5awx"]
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_g2mvv"]
+size = Vector3(4.4, 0.8, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fqiln"]
+size = Vector3(4.4, 0.8, 0.7)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ghums"]
+albedo_color = Color(0.38431373, 0.87058824, 0.85882354, 1)
+roughness = 0.85
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_55y1y"]
+top_radius = 0.25
+bottom_radius = 0.25
+height = 0.02
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e0nev"]
+albedo_color = Color(0.38431373, 0.87058824, 0.85882354, 1)
+roughness = 0.85
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_r46j3"]
+top_radius = 0.25
+bottom_radius = 0.25
+height = 0.02
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8llxp"]
+albedo_color = Color(0.38431373, 0.87058824, 0.85882354, 1)
+roughness = 0.85
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_dpk7b"]
+top_radius = 0.25
+bottom_radius = 0.25
+height = 0.02
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_65scr"]
+albedo_color = Color(0.38431373, 0.87058824, 0.85882354, 1)
+roughness = 0.85
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_i8d4n"]
+top_radius = 0.25
+bottom_radius = 0.25
+height = 0.02
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nmwg1"]
+albedo_color = Color(0.7254902, 0.6431373, 0.9372549, 1)
+roughness = 0.85
+emission_enabled = true
+emission = Color(0.10882354, 0.096470594, 0.14058824, 0.15)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_jpfi1"]
+top_radius = 0.82
+bottom_radius = 0.82
+height = 0.035
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t6cmr"]
+albedo_color = Color(0.8352941, 0.9411765, 0.85490197, 1)
+roughness = 0.85
+
+[sub_resource type="TorusMesh" id="TorusMesh_vl77y"]
+inner_radius = 0.755
+outer_radius = 0.855
+
+[sub_resource type="PlaneMesh" id="V3_plane_merge"]
+size = Vector2(2.0, 1.8)
+
+[sub_resource type="ShaderMaterial" id="V3_material_merge"]
+resource_local_to_scene = true
+shader = ExtResource("V3_zone")
+shader_parameter/zone_size = Vector2(2.0, 1.8)
+shader_parameter/accent = Color(0.65, 0.49, 0.91, 1)
+shader_parameter/icon = ExtResource("V3_icon_book")
+shader_parameter/active = 0.0
+shader_parameter/ready = 0.0
+shader_parameter/complete = 0.0
+shader_parameter/progress = -1.0
+
+[node name="MergeGarden" type="Node3D" unique_id=1386693455]
+
+[node name="Bench_1" type="Node3D" parent="." unique_id=134141001]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -10.6, 0, 7.6)
+
+[node name="Bench_1" parent="Bench_1" unique_id=1023980282 instance=ExtResource("1_rcs7x")]
+transform = Transform3D(2.6, 0, 0, 0, 2.6, 0, 0, 0, 2.6, 0, 0, 0)
+
+[node name="Barrel" type="Node3D" parent="." unique_id=1948168749]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.7, 0, 3.8)
+
+[node name="Barrel" parent="Barrel" unique_id=599654352 instance=ExtResource("2_pgimn")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
+
+[node name="Goldfish" type="Node3D" parent="." unique_id=1907766043]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -9.7, 1.18, 3.8)
+visible = false
+metadata/display_species = 0
+
+[node name="Goldfish" parent="Goldfish" unique_id=661650884 instance=ExtResource("3_xxovq")]
+transform = Transform3D(0.095, 0, 0, 0, 0.095, 0, 0, 0, 0.095, 0, 0, 0)
+
+[node name="Barrel2" type="Node3D" parent="." unique_id=1680589192]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 0, 3.8)
+
+[node name="Barrel" parent="Barrel2" unique_id=1760502429 instance=ExtResource("2_pgimn")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
+
+[node name="Clownfish" type="Node3D" parent="." unique_id=1114223913]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -8.5, 1.18, 3.8)
+visible = false
+metadata/display_species = 1
+
+[node name="Clownfish" parent="Clownfish" unique_id=471397901 instance=ExtResource("4_sfr1k")]
+transform = Transform3D(0.095, 0, 0, 0, 0.095, 0, 0, 0, 0.095, 0, 0, 0)
+
+[node name="Barrel3" type="Node3D" parent="." unique_id=627465296]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.3, 0, 3.8)
+
+[node name="Barrel" parent="Barrel3" unique_id=1046446070 instance=ExtResource("2_pgimn")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
+
+[node name="Puffer" type="Node3D" parent="." unique_id=1806447079]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.3, 1.18, 3.8)
+visible = false
+metadata/display_species = 2
+
+[node name="Puffer" parent="Puffer" unique_id=737198715 instance=ExtResource("5_jf4e7")]
+transform = Transform3D(0.095, 0, 0, 0, 0.095, 0, 0, 0, 0.095, 0, 0, 0)
+
+[node name="Barrel4" type="Node3D" parent="." unique_id=756639809]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.1, 0, 3.8)
+
+[node name="Barrel" parent="Barrel4" unique_id=1605635186 instance=ExtResource("2_pgimn")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
+
+[node name="Swordfish" type="Node3D" parent="." unique_id=150559164]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -6.1, 1.18, 3.8)
+visible = false
+metadata/display_species = 3
+
+[node name="Swordfish" parent="Swordfish" unique_id=829960554 instance=ExtResource("6_rvlhc")]
+transform = Transform3D(0.095, 0, 0, 0, 0.095, 0, 0, 0, 0.095, 0, 0, 0)
+
+[node name="Title" type="Label3D" parent="." unique_id=539222312]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.8, 2, 3.8)
+pixel_size = 0.0035
+billboard = 1
+modulate = Color(0.76862746, 1, 0.9372549, 1)
+outline_modulate = Color(0.08627451, 0.23137255, 0.2784314, 1)
+text = "DISCOVERIES"
+font_size = 38
+outline_size = 3
+metadata/station_label = &"merge"
+
+[node name="DisplayCollider" type="MeshInstance3D" parent="." unique_id=2012705514]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.9, 0.4, 3.8)
+visible = false
+material_override = SubResource("StandardMaterial3D_e5awx")
+mesh = SubResource("BoxMesh_g2mvv")
+
+[node name="Solid_9909" type="StaticBody3D" parent="DisplayCollider" unique_id=1711982162]
+
+[node name="Shape_9908" type="CollisionShape3D" parent="DisplayCollider/Solid_9909" unique_id=1658007321]
+shape = SubResource("BoxShape3D_fqiln")
+
+[node name="Pad_merge" type="Node3D" parent="." unique_id=1568818274]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0, 9.4)
+metadata/pad_id = "merge"
+metadata/radius = 0.82
+
+[node name="Surface" type="MeshInstance3D" parent="Pad_merge" unique_id=852390628]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
+material_override = SubResource("V3_material_merge")
+mesh = SubResource("V3_plane_merge")
+cast_shadow = 0
+
+[node name="Caption" type="Label3D" parent="Pad_merge" unique_id=587178287]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28, 0.23)
+pixel_size = 0.0035
+billboard = 1
+modulate = Color(0.08, 0.24, 0.28, 1)
+outline_modulate = Color(0.96, 1, 0.9, 1)
+text = "MERGE"
+font_size = 46
+outline_size = 3
+
+[node name="Workbench" parent="." instance=ExtResource("V4_workbench")]
+position = Vector3(-7.5, 0.92, 6.8)
+scale = Vector3(0.65, 0.65, 0.65)
