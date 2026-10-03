@@ -18,6 +18,10 @@ config/features=PackedStringArray("4.7", "Mobile")
 
 Economy="*res://scripts/economy.gd"
 
+[debug]
+
+file_logging/enable_file_logging.ios=true
+
 [display]
 
 window/size/viewport_width=1280
@@ -70,25 +74,11 @@ debug_toggle={
 [rendering]
 
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true
 
 [xogot]
 
-project/editorState=[{
-"column": 36,
-"line": 43,
-"path": "res://docs/asset-inventory.md",
-"type": "file"
-}, {
-"column": 0,
-"line": 7,
-"path": "res://docs/HIGH_CONCEPT.md",
-"type": "file"
-}, {
-"column": 0,
-"line": 0,
-"path": "res://docs/GAME_DESIGN.md",
-"type": "file"
-}]
+project/editorState=[]
 project/shaderEditorState=[]
 project/breakpoints={}
 project/disabled_breakpoints={}

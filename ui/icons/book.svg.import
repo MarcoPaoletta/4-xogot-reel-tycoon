@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://meauej1useq3"
 path.s3tc="res://.godot/imported/book.svg-7d7f901a52cf89c53d3c161b7a779e71.s3tc.ctex"
+path.etc2="res://.godot/imported/book.svg-7d7f901a52cf89c53d3c161b7a779e71.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://ui/icons/book.svg"
-dest_files=["res://.godot/imported/book.svg-7d7f901a52cf89c53d3c161b7a779e71.s3tc.ctex"]
+dest_files=["res://.godot/imported/book.svg-7d7f901a52cf89c53d3c161b7a779e71.s3tc.ctex", "res://.godot/imported/book.svg-7d7f901a52cf89c53d3c161b7a779e71.etc2.ctex"]
 
 [params]
 

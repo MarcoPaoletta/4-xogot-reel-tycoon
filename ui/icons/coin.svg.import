@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://dtbhnvdbm8m8o"
 path.s3tc="res://.godot/imported/coin.svg-d26f3d19464ddc11c3e0a4af81e60a77.s3tc.ctex"
+path.etc2="res://.godot/imported/coin.svg-d26f3d19464ddc11c3e0a4af81e60a77.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://ui/icons/coin.svg"
-dest_files=["res://.godot/imported/coin.svg-d26f3d19464ddc11c3e0a4af81e60a77.s3tc.ctex"]
+dest_files=["res://.godot/imported/coin.svg-d26f3d19464ddc11c3e0a4af81e60a77.s3tc.ctex", "res://.godot/imported/coin.svg-d26f3d19464ddc11c3e0a4af81e60a77.etc2.ctex"]
 
 [params]
 
