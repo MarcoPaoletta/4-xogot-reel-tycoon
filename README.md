@@ -63,6 +63,10 @@ godot --headless --path . -s res://tools/run_structure_tests.gd
 
 Expected: one `PASS` line per test and `FAILURES: 0`. The gameplay suites in `tests/game` run inside the game with the Xogot `xo` tool, as described in [`docs/PLAYABLE.md`](docs/PLAYABLE.md).
 
+## Running on iPad and iPhone
+
+The game runs inside Xogot on Mac, iPad and iPhone. Open the project in Xogot and press play. For an installable build, the `xogot/` folder holds the iOS app files (`Info.plist`, privacy manifest and entitlements), and [ShipGodot](https://shipgodot.com/blog/deploy-godot-ipad-games-with-shipgodot/) can build it and send it to TestFlight straight from the iPad. That path needs a paid Apple Developer membership and your own App ID. A compiled build may include the itHappy characters, because a finished build is a final product under their [usage policy](https://ithappystudios.com/free-asset-usage-policy/). Only the raw files cannot go in the repository.
+
 ## Exporting to iOS
 
 The project uses the Mobile renderer. A native iOS export needs ETC2/ASTC texture compression, so `rendering/textures/vram_compression/import_etc2_astc` is enabled in `project.godot` (Project Settings, Rendering, Textures, VRAM Compression, Import ETC2 ASTC). Leave it on, otherwise the export presets report that the target platform requires ETC2/ASTC texture compression. After changing it, let the project reimport.
