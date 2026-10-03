@@ -79,7 +79,7 @@ func _run():
 	e.queue_free()
 	# All ten supplied customers, not just the fisherman or the first skin.
 	for skin in range(1,11):
-		var person=load("res://assets/itHappy Characters GLB/Cliente %d.glb"%skin).instantiate()
+		var person=load("res://scripts/people.gd").instantiate("Cliente %d"%skin)
 		root.add_child(person)
 		person.hide()
 		var sk=person.find_child("Skeleton3D",true,false) as Skeleton3D
@@ -88,11 +88,12 @@ func _run():
 		var origin=person.to_local(sk.global_position)
 		check(Vector2(origin.x,origin.z).length()<0.001,"customer %d visual rig is centered on its actual movement and speech-bubble anchor"%skin)
 		var bone=sk.find_bone("Root")
+		if bone<0: bone=sk.get_parentless_bones()[0] # the CC0 fallback rig names its top bone differently
 		var clean=true
 		for phase in [0.0,0.25,0.5,0.75,0.999,0.0]:
 			a.seek(a.current_animation_length*phase,true)
 			sk.force_update_all_bone_transforms()
-			clean=clean and Vector2(sk.get_bone_pose(bone).origin.x,sk.get_bone_pose(bone).origin.z).length()<0.001
+			clean=clean and Vector2(sk.get_bone_pose(bone).origin.x-sk.get_bone_rest(bone).origin.x,sk.get_bone_pose(bone).origin.z-sk.get_bone_rest(bone).origin.z).length()<0.001 # pinned to its rest pose
 		check(clean,"customer %d has no top-level root translation or loop seam"%skin)
 		a.seek(0.30,true)
 		var phase=a.current_animation_position

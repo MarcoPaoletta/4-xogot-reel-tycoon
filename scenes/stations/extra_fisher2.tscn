@@ -1,6 +1,6 @@
 [gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://assets/itHappy Characters GLB/Pescador.glb" id="1_84kjy"]
+[ext_resource type="PackedScene" path="res://scenes/people/person.tscn" id="1_84kjy"]
 [ext_resource type="PackedScene" path="res://assets/Cute Fish Pack - Feb 2020/FBX/FishingRod_Lvl1.fbx" id="2_22ptq"]
 [ext_resource type="PackedScene" path="res://assets/Medieval Village Pack - Dec 2020/Props/FBX/Crate.fbx" id="3_0v34v"]
 
@@ -53,6 +53,7 @@ visible = false
 metadata/world_ref = "fisher2_worker"
 
 [node name="Pescador" parent="Worker" instance=ExtResource("1_84kjy")]
+character = "Pescador"
 transform = Transform3D(0.97, 0, 0, 0, 0.97, 0, 0, 0, 0.97, 0, 0, 0)
 
 [node name="FishingRod_Lvl1" type="Node3D" parent="Worker"]

@@ -36,16 +36,36 @@ func test_fish_models_have_visible_meshes() -> Variant:
 	return true
 
 func test_people_and_locomotion_clips() -> Variant:
+	# Uses the itHappy models when they are present locally, otherwise the CC0 fallback.
+	var people = load("res://scripts/people.gd")
 	var filenames: Array[String] = ["Pescador"]
 	for i in range(1, 11): filenames.append("Cliente %d" % i)
 	for filename in filenames:
-		var packed = load("res://assets/itHappy Characters GLB/" + filename + ".glb") as PackedScene
-		if packed == null: return "Missing private character " + filename
+		var path: String = people.resolve(filename)
+		var packed = load(path) as PackedScene
+		if packed == null: return "Missing character " + filename + " at " + path
 		var scene = packed.instantiate()
+		people.prepare(scene)
 		var animation = scene.find_child("AnimationPlayer", true, false) as AnimationPlayer
-		var valid = animation != null and animation.has_animation("Idle_Breathing") and animation.has_animation("Walk_Forward") and animation.has_animation("Run_Forward")
+		var skeleton = scene.find_child("Skeleton3D", true, false) as Skeleton3D
+		var valid = animation != null and skeleton != null and animation.has_animation("Idle_Breathing") and animation.has_animation("Walk_Forward") and animation.has_animation("Run_Forward")
 		scene.free()
 		if not valid: return "Missing locomotion clips: " + filename
+	return true
+
+func test_fallback_characters_are_complete() -> Variant:
+	# The repository must run out of the box, so the CC0 stand ins must always load.
+	var people = load("res://scripts/people.gd")
+	var names: Array[String] = [people.FALLBACK_FISHER]
+	names.append_array(people.FALLBACK_CUSTOMERS)
+	for fallback_name in names:
+		var packed = load(people.FALLBACK_DIR + fallback_name + ".glb") as PackedScene
+		if packed == null: return "Missing fallback character " + fallback_name
+		var scene = packed.instantiate()
+		var animation = scene.find_child("AnimationPlayer", true, false) as AnimationPlayer
+		var valid = animation != null and animation.has_animation("Idle") and animation.has_animation("Walk") and animation.has_animation("Run") and not scene.find_children("*", "MeshInstance3D", true, false).is_empty()
+		scene.free()
+		if not valid: return "Fallback character is incomplete: " + fallback_name
 	return true
 
 func test_authored_hub_tree() -> Variant:

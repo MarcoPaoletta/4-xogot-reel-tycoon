@@ -1,9 +1,9 @@
 [gd_scene format=3]
 
 [ext_resource type="PackedScene" uid="uid://bc0b4imie77u6" path="res://assets/Medieval Village Pack - Dec 2020/Props/FBX/MarketStand_1.fbx" id="1_fo33s"]
-[ext_resource type="PackedScene" uid="uid://c2xvm1o17i83v" path="res://assets/itHappy Characters GLB/Cliente 1.glb" id="2_fup1y"]
-[ext_resource type="PackedScene" uid="uid://daa0n8ecu3baw" path="res://assets/itHappy Characters GLB/Cliente 2.glb" id="3_o57xv"]
-[ext_resource type="PackedScene" uid="uid://rfpepxf5em0s" path="res://assets/itHappy Characters GLB/Cliente 3.glb" id="4_y8rp8"]
+[ext_resource type="PackedScene" path="res://scenes/people/person.tscn" id="2_fup1y"]
+[ext_resource type="PackedScene" path="res://scenes/people/person.tscn" id="3_o57xv"]
+[ext_resource type="PackedScene" path="res://scenes/people/person.tscn" id="4_y8rp8"]
 
 [ext_resource type="Shader" path="res://shaders/interaction_zone.gdshader" id="V3_zone"]
 [ext_resource type="Texture2D" path="res://ui/icons/box.svg" id="V3_icon_box"]
@@ -119,6 +119,7 @@ position = Vector3(9.10,0,2.60)
 metadata/customer_slot = 6
 
 [node name="Cliente 1" parent="Customer0" instance=ExtResource("2_fup1y")]
+character = "Cliente 1"
 transform = Transform3D(0.98, 0, 0, 0, 0.98, 0, 0, 0, 0.98, 0, 0, 0)
 
 [node name="Customer1" type="Node3D" parent="."]
@@ -126,6 +127,7 @@ position = Vector3(9.85,0,4.50)
 metadata/customer_slot = 7
 
 [node name="Cliente 2" parent="Customer1" instance=ExtResource("3_o57xv")]
+character = "Cliente 2"
 transform = Transform3D(0.98, 0, 0, 0, 0.98, 0, 0, 0, 0.98, 0, 0, 0)
 
 [node name="Customer2" type="Node3D" parent="."]
@@ -133,6 +135,7 @@ position = Vector3(10.60,0,6.40)
 metadata/customer_slot = 8
 
 [node name="Cliente 3" parent="Customer2" instance=ExtResource("4_y8rp8")]
+character = "Cliente 3"
 transform = Transform3D(0.98, 0, 0, 0, 0.98, 0, 0, 0, 0.98, 0, 0, 0)
 
 [node name="MarketCollider" type="MeshInstance3D" parent="."]

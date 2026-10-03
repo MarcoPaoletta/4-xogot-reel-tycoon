@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c57xlg4d2362l"]
 
 [ext_resource type="Script" uid="uid://bxh58drt6vm81" path="res://scripts/player.gd" id="1_yyjtv"]
-[ext_resource type="PackedScene" uid="uid://b06n3wxtj8wy8" path="res://assets/itHappy Characters GLB/Pescador.glb" id="2_1e3eo"]
+[ext_resource type="PackedScene" path="res://scenes/people/person.tscn" id="2_1e3eo"]
 [ext_resource type="PackedScene" uid="uid://dwtgaicfkeycb" path="res://assets/Cute Fish Pack - Feb 2020/FBX/FishingRod_Lvl1.fbx" id="4_4ty35"]
 
 [ext_resource type="Script" path="res://scripts/backpack_stack.gd" id="V6_stack"]
@@ -21,6 +21,7 @@ shape = SubResource("CapsuleShape3D_f3v05")
 [node name="Visual" type="Node3D" parent="." unique_id=507023149]
 
 [node name="Model" type="Node3D" parent="Visual" unique_id=1036314944 instance=ExtResource("2_1e3eo")]
+character = "Pescador"
 transform = Transform3D(0.97, 0, 0, 0, 0.97, 0, 0, 0, 0.97, 0, 0, 0)
 
 [node name="Basket" type="Node3D" parent="Visual" unique_id=740211156]

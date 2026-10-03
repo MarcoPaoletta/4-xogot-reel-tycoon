@@ -1,6 +1,7 @@
 extends Node3D
 const SLICER = preload("res://scripts/fish_slicer.gd")
 const IN_PLACE = preload("res://scripts/in_place_animation.gd")
+const PEOPLE_LIB = preload("res://scripts/people.gd")
 const FISH_LENGTH = 0.50
 const PACKAGE_LENGTH = 0.32
 var factory: Node3D
@@ -67,6 +68,8 @@ func box(parent: Node, pos: Vector3, size: Vector3, color: Color, collision: boo
 	return mesh
 
 func model(path: String, parent: Node, pos: Vector3, uniform_scale: float, yaw: float = 0) -> Node3D:
+	# Character paths name the itHappy set. People.resolve falls back to the CC0 characters when it is absent.
+	if path.begins_with(PEOPLE): path = PEOPLE_LIB.resolve(path.get_file().get_basename())
 	var holder = Node3D.new()
 	parent.add_child(holder)
 	holder.position = pos
@@ -77,7 +80,8 @@ func model(path: String, parent: Node, pos: Vector3, uniform_scale: float, yaw: 
 		return holder
 	var instance = model_cache[path].instantiate()
 	holder.add_child(instance)
-	instance.scale = Vector3.ONE * uniform_scale
+	instance.scale = Vector3.ONE * uniform_scale * PEOPLE_LIB.scale_for(path)
+	if PEOPLE_LIB.is_person(path): PEOPLE_LIB.prepare(instance, path)
 	if path.begins_with(FISH) and path.get_file().get_basename() in Economy.SPECIES:
 		color_fish(instance)
 	return holder
