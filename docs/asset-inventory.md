@@ -321,7 +321,7 @@ Crates, barrels, bags, packages, market stands and `Sawmill_saw` are the source 
 
 ## Characters (itHappy Creative Characters FREE, kept out of git)
 
-The license allows use in a game but forbids redistributing the files, so `assets/itHappy Characters GLB/` and `assets/itHappy Creative Characters Free/` are both listed in `.gitignore` and are never committed. Forks must download the pack themselves (see `THIRD_PARTY_NOTICES.md`).
+The license allows use in a game but forbids redistributing the files, so `assets/itHappy Characters GLB/` and `assets/itHappy Creative Characters Free/` are both listed in `.gitignore` and are never committed. Forks must download the pack themselves (see `THIRD_PARTY_NOTICES.md` and `docs/CHARACTERS_SETUP.md`). Without those files the game uses seven CC0 Quaternius characters from `assets/Quaternius Ultimate Animated Characters/`, chosen by `scripts/people.gd`.
 
 ### The fisherman and the ten customers (use these)
 
